@@ -1,6 +1,6 @@
 // lib/screens/fuel_screen.dart
+import 'package:autoperf_monitor/utils/date_formatter.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart'; // Import fl_chart
 import 'package:autoperf_monitor/models/fuel_record.dart';
 import 'package:autoperf_monitor/database/database_helper.dart';
@@ -184,7 +184,7 @@ class _FuelScreenState extends State<FuelScreen> {
                 children: [
                   // Date Picker
                   ListTile(
-                    title: Text('Data: ${DateFormat('yyyy-MM-dd').format(_selectedDate)}'),
+                    title: Text('Data: ${DateFormatter.formatAnoMonthDay(_selectedDate)}'),
                     trailing: const Icon(Icons.calendar_today),
                     onTap: () => _selectDate(context),
                   ),
@@ -323,7 +323,7 @@ class _FuelScreenState extends State<FuelScreen> {
                           return SideTitleWidget(
                             meta: meta, // Added meta parameter
                             space: 8.0,
-                            child: Text(DateFormat('dd MMM').format(date), style: const TextStyle(fontSize: 10)),
+                            child: Text(DateFormatter.formatAnoMonthDay(date), style: const TextStyle(fontSize: 10)),
                           );
                         },
                       ),
@@ -367,7 +367,7 @@ class _FuelScreenState extends State<FuelScreen> {
                       return Card(
                         margin: const EdgeInsets.symmetric(vertical: 8.0),
                         child: ListTile(
-                          title: Text('${DateFormat('yyyy-MM-dd').format(record.date)} - ${record.fuelType.name.toUpperCase()}'),
+                          title: Text('${DateFormatter.formatAnoMonthDay(record.date)} - ${record.fuelType.name.toUpperCase()}'),
                           subtitle: Text('Litri: ${record.liters.toStringAsFixed(2)} | Importo: €${record.amount.toStringAsFixed(2)} | Chilometraggio: ${record.mileage.toStringAsFixed(0)} km'),
                           trailing: IconButton(
                             icon: const Icon(Icons.delete, color: Colors.redAccent),
