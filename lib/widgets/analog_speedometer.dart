@@ -41,7 +41,12 @@ class _AnalogSpeedometerState extends State<AnalogSpeedometer> with SingleTicker
   void didUpdateWidget(covariant AnalogSpeedometer oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.speed != oldWidget.speed) {
-      _animation = Tween<double>(begin: oldWidget.speed, end: widget.speed).animate(_controller);
+      _animation = Tween<double>(
+        begin: oldWidget.speed,
+        end: widget.speed,
+      ).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+      );
       _controller.forward(from: 0);
     }
   }

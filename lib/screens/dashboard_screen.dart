@@ -160,7 +160,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard'),
+        title: const Text('Cruscotto'),
         // actions: [ // Commented out OBD connection button
         //   IconButton(
         //     icon: Icon(_isObdConnected ? Icons.bluetooth_connected : Icons.bluetooth_disabled),
@@ -180,7 +180,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: Text(
-                  'GPS Accuracy: ${_gpsAccuracy.toStringAsFixed(1)} m',
+                  'Precisione GPS: ${_gpsAccuracy.toStringAsFixed(1)} m',
                   style: TextStyle(
                     color: _gpsAccuracy < 10 ? Colors.green : (_gpsAccuracy < 30 ? Colors.orange : Colors.red),
                     fontSize: 14,
@@ -224,27 +224,32 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
               mainAxisSpacing: 16,
               children: [
                 _MetricCard(
-                  title: 'Altitude',
+                  title: 'Velocità',
+                  value: _currentGpsSpeed,
+                  unit: 'km/h',
+                ),
+                _MetricCard(
+                  title: 'Altitudine',
                   value: _currentMetrics.altitude,
                   unit: 'm',
                 ),
                 _MetricCard(
-                  title: 'Avg Speed',
+                  title: 'Velocità media',
                   value: _currentMetrics.averageSpeed,
                   unit: 'km/h',
                 ),
                 _MetricCard(
-                  title: 'Min Speed',
+                  title: 'Velocità minima',
                   value: _currentMetrics.minSpeed,
                   unit: 'km/h',
                 ),
                 _MetricCard(
-                  title: 'Max Speed',
+                  title: 'Velocità massima',
                   value: _currentMetrics.maxSpeed,
                   unit: 'km/h',
                 ),
                 _MetricCard(
-                  title: 'Distance',
+                  title: 'Distanza',
                   value: _currentMetrics.distanceTraveled,
                   unit: 'km',
                 ),
@@ -253,7 +258,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
             const SizedBox(height: 20),
             FloatingActionButton.extended(
               onPressed: _toggleMonitoring,
-              label: Text(_isMonitoring ? 'STOP Session' : 'START Session'),
+              label: Text(_isMonitoring ? 'ARRESTA Sessione' : 'AVVIA Sessione'),
               icon: Icon(_isMonitoring ? Icons.stop : Icons.play_arrow),
               backgroundColor: _isMonitoring ? Colors.red : Colors.green,
             ),
