@@ -18,7 +18,7 @@ class _FuelScreenState extends State<FuelScreen> {
   final TextEditingController _litersController = TextEditingController();
   final TextEditingController _mileageController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
-  FuelType _selectedFuelType = FuelType.petrol;
+  FuelType _selectedFuelType = FuelType.benzina;
 
   final DatabaseHelper _databaseHelper = DatabaseHelper();
   List<FuelRecord> _fuelRecords = [];
