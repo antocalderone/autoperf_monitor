@@ -294,7 +294,7 @@ class _MetricCard extends StatelessWidget {
             Text(
               title,
               style: const TextStyle(
-                fontSize: 16,
+                fontSize: 14,
                 color: Colors.white70,
               ),
             ),
@@ -302,7 +302,7 @@ class _MetricCard extends StatelessWidget {
             Text(
               '${value.toStringAsFixed(1)} $unit',
               style: const TextStyle(
-                fontSize: 24,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
