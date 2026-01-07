@@ -5,17 +5,11 @@ import 'package:flutter/material.dart';
 class AnalogSpeedometer extends StatefulWidget {
   final double speed; // Current speed in km/h
   final double maxSpeed; // Max speed for the gauge
-  final Color primaryColor;
-  final Color accentColor;
-  final Color warningColor;
 
   const AnalogSpeedometer({
     super.key,
     required this.speed,
-    this.maxSpeed = 240,
-    this.primaryColor = Colors.red,
-    this.accentColor = Colors.green,
-    this.warningColor = Colors.orange,
+    this.maxSpeed = 180,
   });
 
   @override
@@ -33,7 +27,9 @@ class _AnalogSpeedometerState extends State<AnalogSpeedometer> with SingleTicker
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    _animation = Tween<double>(begin: 0, end: widget.speed).animate(_controller);
+    _animation = Tween<double>(begin: 0, end: widget.speed).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
     _controller.forward();
   }
 
@@ -66,9 +62,6 @@ class _AnalogSpeedometerState extends State<AnalogSpeedometer> with SingleTicker
           painter: _SpeedometerPainter(
             speed: _animation.value,
             maxSpeed: widget.maxSpeed,
-            primaryColor: widget.primaryColor,
-            accentColor: widget.accentColor,
-            warningColor: widget.warningColor,
           ),
           size: Size.infinite,
         );
@@ -80,122 +73,133 @@ class _AnalogSpeedometerState extends State<AnalogSpeedometer> with SingleTicker
 class _SpeedometerPainter extends CustomPainter {
   final double speed;
   final double maxSpeed;
-  final Color primaryColor;
-  final Color accentColor;
-  final Color warningColor;
 
   _SpeedometerPainter({
     required this.speed,
     required this.maxSpeed,
-    required this.primaryColor,
-    required this.accentColor,
-    required this.warningColor,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     final centerX = size.width / 2;
     final centerY = size.height / 2;
-    final radius = min(centerX, centerY) * 0.9;
+    final radius = min(centerX, centerY);
 
-    final Paint dialPaint = Paint()
-      ..color = Colors.grey.shade800
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 10;
+    // Background
+    final backgroundPaint = Paint()..color = Colors.black;
+    canvas.drawCircle(Offset(centerX, centerY), radius, backgroundPaint);
 
-    final Paint tickPaint = Paint()
-      ..color = Colors.white
+    // Outer rings
+    final outerRingPaint = Paint()
+      ..color = const Color(0xFFF82D2D)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
+    canvas.drawCircle(Offset(centerX, centerY), radius - 2, outerRingPaint);
 
-    // Draw dial arc (270 degrees from -225 to 45 degrees)
-    canvas.drawArc(
-      Rect.fromCircle(center: Offset(centerX, centerY), radius: radius),
-      -225 * (pi / 180), // Start angle (top-left)
-      270 * (pi / 180),  // Sweep angle (3/4 of a circle)
-      false,
-      dialPaint,
-    );
-
-    // Draw speed zones
-    final greenZoneSweep = (maxSpeed * 0.5 / maxSpeed) * 270 * (pi / 180); // 0-50%
-    final yellowZoneSweep = (maxSpeed * 0.25 / maxSpeed) * 270 * (pi / 180); // 50-75%
-    final redZoneSweep = (maxSpeed * 0.25 / maxSpeed) * 270 * (pi / 180); // 75-100%
-
-    canvas.drawArc(
-      Rect.fromCircle(center: Offset(centerX, centerY), radius: radius),
-      -225 * (pi / 180),
-      greenZoneSweep,
-      false,
-      Paint()..color = accentColor.withOpacity(0.5)..style = PaintingStyle.stroke..strokeWidth = 10,
-    );
-    canvas.drawArc(
-      Rect.fromCircle(center: Offset(centerX, centerY), radius: radius),
-      -225 * (pi / 180) + greenZoneSweep,
-      yellowZoneSweep,
-      false,
-      Paint()..color = warningColor.withOpacity(0.5)..style = PaintingStyle.stroke..strokeWidth = 10,
-    );
-    canvas.drawArc(
-      Rect.fromCircle(center: Offset(centerX, centerY), radius: radius),
-      -225 * (pi / 180) + greenZoneSweep + yellowZoneSweep,
-      redZoneSweep,
-      false,
-      Paint()..color = primaryColor.withOpacity(0.5)..style = PaintingStyle.stroke..strokeWidth = 10,
-    );
-
+    final innerRingPaint = Paint()
+      ..color = const Color(0xFF00CFF8)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+    canvas.drawCircle(Offset(centerX, centerY), radius - 6, innerRingPaint);
 
     // Draw tick marks and labels
-    for (int i = 0; i <= maxSpeed; i += 10) {
-      final angle = -225 + (i / maxSpeed * 270);
+    final tickPaint = Paint()..color = Colors.white;
+    for (int i = 0; i <= maxSpeed; i += 20) {
+      final angle = -210 + (i / maxSpeed * 240);
+      final tickLength = (i % 40 == 0) ? 15.0 : 8.0;
       final tickStart = Offset(
-        centerX + radius * cos(angle * (pi / 180)),
-        centerY + radius * sin(angle * (pi / 180)),
+        centerX + (radius - 20) * cos(angle * pi / 180),
+        centerY + (radius - 20) * sin(angle * pi / 180),
       );
       final tickEnd = Offset(
-        centerX + (radius - (i % 20 == 0 ? 15 : 8)) * cos(angle * (pi / 180)),
-        centerY + (radius - (i % 20 == 0 ? 15 : 8)) * sin(angle * (pi / 180)),
+        centerX + (radius - 20 - tickLength) * cos(angle * pi / 180),
+        centerY + (radius - 20 - tickLength) * sin(angle * pi / 180),
       );
-      canvas.drawLine(tickStart, tickEnd, tickPaint);
+      canvas.drawLine(tickStart, tickEnd, tickPaint..strokeWidth = 2);
 
       if (i % 20 == 0) {
-        final TextPainter tp = TextPainter(
+        final textPainter = TextPainter(
           text: TextSpan(
             text: '$i',
-            style: TextStyle(color: Colors.white, fontSize: radius * 0.08),
+            style: const TextStyle(color: Colors.white, fontSize: 16),
           ),
           textAlign: TextAlign.center,
           textDirection: TextDirection.ltr,
         );
-        tp.layout();
+        textPainter.layout();
         final textOffset = Offset(
-          centerX + (radius - 30) * cos(angle * (pi / 180)) - tp.width / 2,
-          centerY + (radius - 30) * sin(angle * (pi / 180)) - tp.height / 2,
+          centerX + (radius - 50) * cos(angle * pi / 180) - textPainter.width / 2,
+          centerY + (radius - 50) * sin(angle * pi / 180) - textPainter.height / 2,
         );
-        tp.paint(canvas, textOffset);
+        textPainter.paint(canvas, textOffset);
       }
     }
 
-
-    // Draw needle
-    final needleAngle = -225 + (speed / maxSpeed * 270);
-    final needlePaint = Paint()
-      ..color = primaryColor
-      ..style = PaintingStyle.fill;
-
-    final needlePath = Path();
-    needlePath.moveTo(centerX, centerY);
-    needlePath.lineTo(
-      centerX + radius * 0.8 * cos(needleAngle * pi / 180),
-      centerY + radius * 0.8 * sin(needleAngle * pi / 180),
+    // Inner arc
+    final innerArcPaint = Paint()
+      ..color = const Color(0xFF00CFF8)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 10;
+    canvas.drawArc(
+      Rect.fromCircle(center: Offset(centerX, centerY), radius: radius * 0.6),
+      -210 * pi / 180,
+      120 * pi / 180,
+      false,
+      innerArcPaint,
     );
-    needlePath.close();
 
-    canvas.drawPath(needlePath, needlePaint..strokeWidth = 4);
+    final redArcPaint = Paint()
+      ..color = const Color(0xFFF82D2D)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 10;
+    canvas.drawArc(
+      Rect.fromCircle(center: Offset(centerX, centerY), radius: radius * 0.6),
+      -90 * pi / 180,
+      120 * pi / 180,
+      false,
+      redArcPaint,
+    );
 
-    // Draw center hub
-    canvas.drawCircle(Offset(centerX, centerY), 10, Paint()..color = Colors.white);
-    canvas.drawCircle(Offset(centerX, centerY), 8, Paint()..color = Colors.black);
+    // "km/h" text
+    final kmhPainter = TextPainter(
+      text: const TextSpan(
+        text: 'km/h',
+        style: TextStyle(color: Colors.white, fontSize: 14),
+      ),
+      textAlign: TextAlign.center,
+      textDirection: TextDirection.ltr,
+    );
+    kmhPainter.layout();
+    kmhPainter.paint(canvas, Offset(centerX - kmhPainter.width / 2, centerY - 30));
+
+    // Needle
+    final needleAngle = -210 + (speed / maxSpeed * 240);
+    final needlePaint = Paint()
+      ..color = const Color(0xFFF82D2D)
+      ..strokeWidth = 4
+      ..strokeCap = StrokeCap.round;
+    final needleStart = Offset(centerX, centerY);
+    final needleEnd = Offset(
+      centerX + (radius * 0.5) * cos(needleAngle * pi / 180),
+      centerY + (radius * 0.5) * sin(needleAngle * pi / 180),
+    );
+    canvas.drawLine(needleStart, needleEnd, needlePaint);
+
+    // Center hub
+    final hubPaint = Paint()..color = const Color(0xFF00CFF8);
+    canvas.drawCircle(Offset(centerX, centerY), 12, hubPaint);
+
+    // Fuel gauge
+    final fuelGaugePaint = Paint()..color = const Color(0xFFF82D2D);
+    canvas.drawRect(Rect.fromLTWH(centerX - 40, centerY + 50, 10, 15), fuelGaugePaint);
+
+    final fuelLevelPaint = Paint()..color = const Color(0xFF00CFF8);
+    for (int i = 0; i < 6; i++) {
+      canvas.drawRect(
+        Rect.fromLTWH(centerX - 25 + (i * 12), centerY + 50, 10, 15),
+        fuelLevelPaint,
+      );
+    }
   }
 
   @override
