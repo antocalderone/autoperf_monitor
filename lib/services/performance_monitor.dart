@@ -1,25 +1,37 @@
 // lib/services/performance_monitor.dart
 import 'dart:async';
-import 'package:geolocator/geolocator.dart';
-import 'package:sensors_plus/sensors_plus.dart';
-import 'package:autoperf_monitor/models/gps_point.dart';
-import 'package:autoperf_monitor/models/performance_metrics.dart';
+import 'dart:math';
+
 import 'package:autoperf_monitor/database/database_helper.dart';
 import 'package:autoperf_monitor/models/driving_session.dart';
-import 'package:autoperf_monitor/utils/douglas_peucker.dart'; // Import the Douglas-Peucker utility
+import 'package:autoperf_monitor/models/gps_point.dart';
+import 'package:autoperf_monitor/models/performance_metrics.dart';
+import 'package:autoperf_monitor/services/settings_service.dart';
+import 'package:autoperf_monitor/utils/douglas_peucker.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 
 class PerformanceMonitor {
   final DatabaseHelper _databaseHelper;
+  final SettingsService _settingsService;
+  final DouglasPeucker _douglasPeucker = DouglasPeucker();
+  final KalmanFilter _kalmanFilter = KalmanFilter();
+
   StreamSubscription<Position>? _positionSubscription;
   StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
 
-  // Real-time data streams
-  late final StreamController<double> _speedController;
-  late final StreamController<double> _altitudeController;
-  late final StreamController<double> _distanceController;
-  late final StreamController<GPSPoint> _currentGpsPointController;
-  late final StreamController<PerformanceMetrics> _metricsController;
-  late final StreamController<double> _gpsAccuracyController;
+  final StreamController<double> _speedController =
+      StreamController<double>.broadcast();
+  final StreamController<double> _altitudeController =
+      StreamController<double>.broadcast();
+  final StreamController<double> _distanceController =
+      StreamController<double>.broadcast();
+  final StreamController<GPSPoint> _currentGpsPointController =
+      StreamController<GPSPoint>.broadcast();
+  final StreamController<PerformanceMetrics> _metricsController =
+      StreamController<PerformanceMetrics>.broadcast();
+  final StreamController<double> _gpsAccuracyController =
+      StreamController<double>.broadcast();
 
   Stream<double> get speedStream => _speedController.stream;
   Stream<double> get altitudeStream => _altitudeController.stream;
@@ -28,37 +40,35 @@ class PerformanceMonitor {
   Stream<PerformanceMetrics> get metricsStream => _metricsController.stream;
   Stream<double> get gpsAccuracyStream => _gpsAccuracyController.stream;
 
-  // Session-related data
   DrivingSession? _currentDrivingSession;
   List<GPSPoint> _currentTrajectory = [];
   PerformanceMetrics _currentMetrics = PerformanceMetrics();
   Position? _lastPosition;
   double _totalDistance = 0.0;
-  double _minSpeed = double.infinity;
-  double _maxSpeed = 0.0;
-  List<double> _speedReadings = []; // For average speed calculation
+  List<double> _speedReadings = [];
 
-  // GPS Accuracy
-  
+  Duration _currentSamplingInterval = const Duration(milliseconds: 500);
 
-  // Adaptive sampling
-  Duration _currentSamplingInterval = const Duration(milliseconds: 500); // Default
+  PerformanceMonitor(
+      {DatabaseHelper? databaseHelper, SettingsService? settingsService})
+      : _databaseHelper = databaseHelper ?? DatabaseHelper(),
+        _settingsService = settingsService ?? SettingsService();
 
-  // Kalman Filter for speed smoothing (placeholder)
-  // TODO: Implement Kalman Filter
+  Future<void> startMonitoring() async {
+    await _handleLocationPermission();
 
-  PerformanceMonitor({DatabaseHelper? databaseHelper}) : _databaseHelper = databaseHelper ?? DatabaseHelper() {
-    _initialize();
-  }
+    _currentSamplingInterval = await _settingsService.getSamplingInterval();
 
-  void _initialize() {
-    _speedController = StreamController<double>.broadcast();
-    _altitudeController = StreamController<double>.broadcast();
-    _distanceController = StreamController<double>.broadcast();
-    _currentGpsPointController = StreamController<GPSPoint>.broadcast();
-    _metricsController = StreamController<PerformanceMetrics>.broadcast();
-    _gpsAccuracyController = StreamController<double>.broadcast();
+    _currentDrivingSession = DrivingSession(
+      startTime: DateTime.now(),
+      trajectory: [],
+      metrics: PerformanceMetrics(),
+    );
 
+    _currentTrajectory = [];
+    _totalDistance = 0.0;
+    _speedReadings = [];
+    _lastPosition = null;
     _currentMetrics = PerformanceMetrics(
       minSpeed: double.infinity,
       maxSpeed: 0.0,
@@ -66,107 +76,93 @@ class PerformanceMonitor {
       distanceTraveled: 0.0,
       altitude: 0.0,
     );
+
+    _startPositionStream();
+
+    _accelerometerSubscription =
+        accelerometerEventStream(samplingPeriod: SensorInterval.gameInterval)
+            .listen((event) {});
   }
 
-  Future<void> startMonitoring() async {
-    // Start a new driving session
-    _currentDrivingSession = DrivingSession(
-      startTime: DateTime.now(),
-      trajectory: [],
-      metrics: PerformanceMetrics(),
-    );
-    _currentTrajectory = [];
-    _totalDistance = 0.0;
-    _minSpeed = double.infinity;
-    _maxSpeed = 0.0;
-    _speedReadings = [];
-    _lastPosition = null; // Reset last position
-
-    // Check if location services are enabled
+  Future<void> _handleLocationPermission() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Location services are not enabled, don't start monitoring
-      _speedController.addError('Location services are disabled.'); // Notify UI
-      return Future.error('Location services are disabled.');
+      _speedController.addError('Location services are disabled.');
+      throw Exception('Location services are disabled.');
     }
 
-    // Request location permissions
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
-        // Permissions not granted, don't start monitoring
-        _speedController.addError('Location permissions are denied (or denied forever).'); // Notify UI
-        return Future.error('Location permissions are denied (or denied forever).');
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        _speedController
+            .addError('Location permissions are denied (or denied forever).');
+        throw Exception('Location permissions are denied (or denied forever).');
       }
     }
+  }
 
-    // Configure location updates (every 500ms as requested)
+  void _startPositionStream() {
     _positionSubscription = Geolocator.getPositionStream(
       locationSettings: AndroidSettings(
         accuracy: LocationAccuracy.bestForNavigation,
         distanceFilter: 0,
         forceLocationManager: true,
+        intervalDuration: _currentSamplingInterval,
       ),
-    ).listen((Position position) {
-      _processPosition(position);
-    });
-
-    // Start accelerometer monitoring (optional, if needed for more advanced calculations)
-    _accelerometerSubscription = accelerometerEventStream(samplingPeriod: SensorInterval.gameInterval).listen(
-      (AccelerometerEvent event) {
-        // TODO: Process accelerometer data if needed (e.g., for more precise motion detection)
-      },
-    );
+    ).listen(_processPosition);
   }
 
   void _processPosition(Position position) {
-    // Convert speed from m/s to km/h
-    final speedKmH = (position.speed ?? 0.0) * 3.6;
+    final speedKmH = position.speed * 3.6;
+    final smoothedSpeedKmH = _kalmanFilter.filter(speedKmH);
 
-    // Adaptive sampling logic
-    if (speedKmH < 30 && _currentSamplingInterval != const Duration(seconds: 1)) { // Urban speed threshold
-      _currentSamplingInterval = const Duration(seconds: 1);
-      _restartPositionStream();
-    } else if (speedKmH >= 30 && _currentSamplingInterval != const Duration(milliseconds: 500)) { // Highway speed threshold
-      _currentSamplingInterval = const Duration(milliseconds: 500);
-      _restartPositionStream();
-    }
+    _updateMetrics(smoothedSpeedKmH, position);
+    _updateTrajectory(smoothedSpeedKmH, position);
 
-    // Apply Kalman filter for speed smoothing (placeholder)
-    final smoothedSpeedKmH = speedKmH; // TODO: Integrate Kalman Filter
+    _speedController.add(smoothedSpeedKmH);
+    _altitudeController.add(position.altitude);
+    _distanceController.add(_totalDistance);
+    _gpsAccuracyController.add(position.accuracy);
+    _metricsController.add(_currentMetrics);
+  }
 
-    // Update metrics
-    if (smoothedSpeedKmH < _minSpeed) {
-      _minSpeed = smoothedSpeedKmH;
-    }
-    if (smoothedSpeedKmH > _maxSpeed) {
-      _maxSpeed = smoothedSpeedKmH;
-    }
+  void _updateMetrics(double smoothedSpeedKmH, Position position) {
     _speedReadings.add(smoothedSpeedKmH);
-    if (_speedReadings.length > 120) { // Keep last 60 seconds of readings for average (500ms interval * 120 = 60s)
+    if (_speedReadings.length > 120) {
       _speedReadings.removeAt(0);
     }
-    _currentMetrics = _currentMetrics.copyWith(
-      minSpeed: _minSpeed == double.infinity ? 0.0 : _minSpeed,
-      maxSpeed: _maxSpeed,
-      averageSpeed: _speedReadings.isNotEmpty ? _speedReadings.reduce((a, b) => a + b) / _speedReadings.length : 0.0,
-      distanceTraveled: _totalDistance,
-      altitude: position.altitude,
-    );
 
-    // Calculate distance traveled
+    final minSpeed = min(
+        _currentMetrics.minSpeed, smoothedSpeedKmH);
+    final maxSpeed = max(
+        _currentMetrics.maxSpeed, smoothedSpeedKmH);
+    final averageSpeed = _speedReadings.isNotEmpty
+        ? _speedReadings.reduce((a, b) => a + b) / _speedReadings.length
+        : 0.0;
+
     if (_lastPosition != null) {
       _totalDistance += Geolocator.distanceBetween(
-        _lastPosition!.latitude,
-        _lastPosition!.longitude,
-        position.latitude,
-        position.longitude,
-      ) / 1000; // Convert to km
+            _lastPosition!.latitude,
+            _lastPosition!.longitude,
+            position.latitude,
+            position.longitude,
+          ) /
+          1000;
     }
     _lastPosition = position;
 
-    // Create GPSPoint and add to trajectory
+    _currentMetrics = _currentMetrics.copyWith(
+      minSpeed: minSpeed,
+      maxSpeed: maxSpeed,
+      averageSpeed: averageSpeed,
+      distanceTraveled: _totalDistance,
+      altitude: position.altitude,
+    );
+  }
+
+  void _updateTrajectory(double smoothedSpeedKmH, Position position) {
     final gpsPoint = GPSPoint(
       latitude: position.latitude,
       longitude: position.longitude,
@@ -177,62 +173,32 @@ class PerformanceMonitor {
     );
     _currentTrajectory.add(gpsPoint);
     _currentGpsPointController.add(gpsPoint);
-
-    // Emit data through streams
-    _speedController.add(smoothedSpeedKmH);
-    _altitudeController.add(position.altitude);
-    _distanceController.add(_totalDistance);
-    _gpsAccuracyController.add(position.accuracy);
-    _metricsController.add(_currentMetrics);
-  }
-
-  void _restartPositionStream() async {
-    await _positionSubscription?.cancel();
-    _positionSubscription = Geolocator.getPositionStream(
-      locationSettings: AndroidSettings(
-        accuracy: LocationAccuracy.bestForNavigation,
-        distanceFilter: 0,
-        forceLocationManager: true,
-      ),
-    ).listen((Position position) {
-      _processPosition(position);
-    });
   }
 
   Future<void> stopMonitoring() async {
     await _positionSubscription?.cancel();
     await _accelerometerSubscription?.cancel();
 
-    // Apply Douglas-Peucker algorithm to compress trajectory
-    final compressedTrajectory = douglasPeucker(_currentTrajectory, 0.0001); // Epsilon value might need tuning
-
-    _currentDrivingSession = _currentDrivingSession?.copyWith(
-      endTime: DateTime.now(),
-      trajectory: compressedTrajectory,
-      metrics: _currentMetrics.copyWith(
-        minSpeed: _minSpeed == double.infinity ? 0.0 : _minSpeed,
-        maxSpeed: _maxSpeed,
-        averageSpeed: _currentMetrics.averageSpeed,
-        distanceTraveled: _totalDistance,
-        altitude: _currentMetrics.altitude,
-      ),
-    );
-
     if (_currentDrivingSession != null) {
-      // Save the session to the database
-      // The insertDrivingSession method will also handle GPS points
+      final compressedTrajectory =
+          _douglasPeucker.simplify(_currentTrajectory, 0.0001);
+
+      _currentDrivingSession = _currentDrivingSession!.copyWith(
+        endTime: DateTime.now(),
+        trajectory: compressedTrajectory,
+        metrics: _currentMetrics,
+      );
+
       await _databaseHelper.insertDrivingSession(_currentDrivingSession!);
     }
-    
+
     _currentDrivingSession = null;
     _currentTrajectory = [];
     _currentMetrics = PerformanceMetrics();
     _lastPosition = null;
     _totalDistance = 0.0;
-    _minSpeed = double.infinity;
-    _maxSpeed = 0.0;
     _speedReadings = [];
-    
+
     dispose();
   }
 
@@ -248,21 +214,17 @@ class PerformanceMonitor {
   }
 }
 
-// Add copyWith to PerformanceMetrics
-extension PerformanceMetricsCopyWith on PerformanceMetrics {
-  PerformanceMetrics copyWith({
-    double? minSpeed,
-    double? maxSpeed,
-    double? averageSpeed,
-    double? distanceTraveled,
-    double? altitude,
-  }) {
-    return PerformanceMetrics(
-      minSpeed: minSpeed ?? this.minSpeed,
-      maxSpeed: maxSpeed ?? this.maxSpeed,
-      averageSpeed: averageSpeed ?? this.averageSpeed,
-      distanceTraveled: distanceTraveled ?? this.distanceTraveled,
-      altitude: altitude ?? this.altitude,
-    );
+class KalmanFilter {
+  double _x = 0;
+  double _p = 1;
+  final double _q = 0.1;
+  final double _r = 0.1;
+
+  double filter(double measurement) {
+    _p = _p + _q;
+    final k = _p / (_p + _r);
+    _x = _x + k * (measurement - _x);
+    _p = (1 - k) * _p;
+    return _x;
   }
 }
