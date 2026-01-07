@@ -1,4 +1,4 @@
-import 'package.flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:autoperf_monitor/screens/dashboard_screen.dart';
 import 'package:autoperf_monitor/screens/fuel_screen.dart';
 import 'package:autoperf_monitor/screens/history_stats_screen.dart';
