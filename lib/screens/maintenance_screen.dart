@@ -80,7 +80,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Maintenance record added successfully!')), 
+        const SnackBar(content: Text('Record di manutenzione aggiunto con successo!')),
       );
     }
   }
@@ -89,7 +89,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Maintenance Records'),
+        title: const Text('Registro Manutenzione'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -97,7 +97,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Add New Maintenance',
+              'Aggiungi Nuova Manutenzione',
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 20),
@@ -106,7 +106,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
               child: Column(
                 children: [
                   ListTile(
-                    title: Text('Date: ${DateFormat('yyyy-MM-dd').format(_selectedDate)}'),
+                    title: Text('Data: ${DateFormat('yyyy-MM-dd').format(_selectedDate)}'),
                     trailing: const Icon(Icons.calendar_today),
                     onTap: () => _selectDate(context),
                   ),
@@ -114,16 +114,16 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                   TextFormField(
                     controller: _mileageController,
                     decoration: const InputDecoration(
-                      labelText: 'Mileage (km)',
+                      labelText: 'Chilometraggio (km)',
                       border: OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter mileage';
+                        return 'Inserisci il chilometraggio';
                       }
                       if (double.tryParse(value) == null) {
-                        return 'Please enter a valid number';
+                        return 'Inserisci un numero valido';
                       }
                       return null;
                     },
@@ -132,7 +132,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                   DropdownButtonFormField<MaintenanceType>(
                     value: _selectedMaintenanceType,
                     decoration: const InputDecoration(
-                      labelText: 'Maintenance Type',
+                      labelText: 'Tipo di Manutenzione',
                       border: OutlineInputBorder(),
                     ),
                     items: MaintenanceType.values.map((MaintenanceType type) {
@@ -151,7 +151,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                   TextFormField(
                     controller: _descriptionController,
                     decoration: const InputDecoration(
-                      labelText: 'Description (Optional)',
+                      labelText: 'Descrizione (Opzionale)',
                       border: OutlineInputBorder(),
                     ),
                     maxLines: 3,
@@ -160,16 +160,16 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                   TextFormField(
                     controller: _costController,
                     decoration: const InputDecoration(
-                      labelText: 'Cost (€)',
+                      labelText: 'Costo (€)',
                       border: OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter cost';
+                        return 'Inserisci il costo';
                       }
                       if (double.tryParse(value) == null) {
-                        return 'Please enter a valid number';
+                        return 'Inserisci un numero valido';
                       }
                       return null;
                     },
@@ -177,47 +177,47 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _submitForm,
-                    child: const Text('Add Maintenance Record'),
+                    child: const Text('Aggiungi Record Manutenzione'),
                   ),
                 ],
               ),
             ),
             const Divider(height: 40),
             Text(
-              'Maintenance History',
+              'Cronologia Manutenzione',
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 20),
             _maintenanceRecords.isEmpty
-                ? const Center(child: Text('No maintenance records yet.'))
+                ? const Center(child: Text('Ancora nessun record di manutenzione.'))
                 : ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _maintenanceRecords.length,
-                    itemBuilder: (context, index) {
-                      final record = _maintenanceRecords[index];
-                      return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: ListTile(
-                          title: Text('${record.formattedDate} - ${record.type.name.replaceAll(RegExp(r'(?<!^)(?=[A-Z])'), ' ')}'),
-                          subtitle: Text('Mileage: ${record.formattedMileage} | Cost: ${record.formattedCost}\n${record.description}'),
-                          isThreeLine: record.description.isNotEmpty,
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.redAccent),
-                            onPressed: () async {
-                              if (record.id != null) {
-                                await _databaseHelper.deleteMaintenanceRecord(record.id!);
-                                _loadMaintenanceRecords();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Maintenance record deleted!')), 
-                                );
-                              }
-                            },
-                          ),
-                        ),
-                      );
-                    },
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _maintenanceRecords.length,
+              itemBuilder: (context, index) {
+                final record = _maintenanceRecords[index];
+                return Card(
+                  margin: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: ListTile(
+                    title: Text('${record.formattedDate} - ${record.type.name.replaceAll(RegExp(r'(?<!^)(?=[A-Z])'), ' ')}'),
+                    subtitle: Text('Chilometraggio: ${record.formattedMileage} | Costo: ${record.formattedCost}\n${record.description}'),
+                    isThreeLine: record.description.isNotEmpty,
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.redAccent),
+                      onPressed: () async {
+                        if (record.id != null) {
+                          await _databaseHelper.deleteMaintenanceRecord(record.id!);
+                          _loadMaintenanceRecords();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Record di manutenzione eliminato!')),
+                          );
+                        }
+                      },
+                    ),
                   ),
+                );
+              },
+            ),
           ],
         ),
       ),
