@@ -198,8 +198,6 @@ class PerformanceMonitor {
     _lastPosition = null;
     _totalDistance = 0.0;
     _speedReadings = [];
-
-    dispose();
   }
 
   void dispose() {

@@ -195,14 +195,7 @@ class DatabaseHelper {
     );
 
     if (maps.isNotEmpty) {
-      return FuelRecord(
-        id: maps.first['id'],
-        date: DateTime.fromMillisecondsSinceEpoch(maps.first['date']),
-        amount: maps.first['amount'],
-        liters: maps.first['liters'],
-        mileage: maps.first['mileage'],
-        fuelType: FuelType.values.firstWhere((e) => e.name == maps.first['fuelType']),
-      );
+      return FuelRecord.fromMap(maps.first);
     }
     return null;
   }
@@ -211,13 +204,7 @@ class DatabaseHelper {
   // --- FuelRecord DAO ---
   Future<int> insertFuelRecord(FuelRecord record) async {
     final db = await database;
-    return await db.insert('fuel_records', {
-      'date': record.date.millisecondsSinceEpoch,
-      'amount': record.amount,
-      'liters': record.liters,
-      'mileage': record.mileage,
-      'fuelType': record.fuelType.name,
-    });
+    return await db.insert('fuel_records', record.toMap());
   }
 
   Future<List<FuelRecord>> getFuelRecords() async {
@@ -225,13 +212,7 @@ class DatabaseHelper {
     final List<Map<String, dynamic>> maps = await db.query('fuel_records', orderBy: 'date DESC');
 
     return List.generate(maps.length, (i) {
-      return FuelRecord(
-        date: DateTime.fromMillisecondsSinceEpoch(maps[i]['date']),
-        amount: maps[i]['amount'],
-        liters: maps[i]['liters'],
-        mileage: maps[i]['mileage'],
-        fuelType: FuelType.values.firstWhere((e) => e.name == maps[i]['fuelType']),
-      );
+      return FuelRecord.fromMap(maps[i]);
     });
   }
 
