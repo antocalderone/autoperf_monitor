@@ -93,20 +93,26 @@ class _SpeedometerPainter extends CustomPainter {
     final outerRingPaint = Paint()
       ..color = const Color(0xFFF82D2D)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
+      ..strokeWidth = 2
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2);
     canvas.drawCircle(Offset(centerX, centerY), radius - 2, outerRingPaint);
 
     final innerRingPaint = Paint()
       ..color = const Color(0xFF00CFF8)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
+      ..strokeWidth = 2
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2);
     canvas.drawCircle(Offset(centerX, centerY), radius - 6, innerRingPaint);
 
     // Draw tick marks and labels
-    final tickPaint = Paint()..color = Colors.white;
-    for (int i = 0; i <= maxSpeed; i += 20) {
+    for (int i = 0; i <= maxSpeed; i += 10) {
       final angle = -210 + (i / maxSpeed * 240);
-      final tickLength = (i % 40 == 0) ? 15.0 : 8.0;
+      final isMajorTick = i % 20 == 0;
+      final tickLength = isMajorTick ? 20.0 : 10.0;
+      final tickPaint = Paint()
+        ..color = isMajorTick ? Colors.yellow : Colors.white
+        ..strokeWidth = isMajorTick ? 4 : 2;
+
       final tickStart = Offset(
         centerX + (radius - 20) * cos(angle * pi / 180),
         centerY + (radius - 20) * sin(angle * pi / 180),
@@ -115,13 +121,13 @@ class _SpeedometerPainter extends CustomPainter {
         centerX + (radius - 20 - tickLength) * cos(angle * pi / 180),
         centerY + (radius - 20 - tickLength) * sin(angle * pi / 180),
       );
-      canvas.drawLine(tickStart, tickEnd, tickPaint..strokeWidth = 2);
+      canvas.drawLine(tickStart, tickEnd, tickPaint);
 
-      if (i % 20 == 0) {
+      if (isMajorTick) {
         final textPainter = TextPainter(
           text: TextSpan(
             text: '$i',
-            style: const TextStyle(color: Colors.white, fontSize: 16),
+            style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
           ),
           textAlign: TextAlign.center,
           textDirection: TextDirection.ltr,
@@ -139,7 +145,8 @@ class _SpeedometerPainter extends CustomPainter {
     final innerArcPaint = Paint()
       ..color = const Color(0xFF00CFF8)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 10;
+      ..strokeWidth = 10
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5);
     canvas.drawArc(
       Rect.fromCircle(center: Offset(centerX, centerY), radius: radius * 0.6),
       -210 * pi / 180,
@@ -151,7 +158,8 @@ class _SpeedometerPainter extends CustomPainter {
     final redArcPaint = Paint()
       ..color = const Color(0xFFF82D2D)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 10;
+      ..strokeWidth = 10
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5);
     canvas.drawArc(
       Rect.fromCircle(center: Offset(centerX, centerY), radius: radius * 0.6),
       -90 * pi / 180,
@@ -176,30 +184,18 @@ class _SpeedometerPainter extends CustomPainter {
     final needleAngle = -210 + (speed / maxSpeed * 240);
     final needlePaint = Paint()
       ..color = const Color(0xFFF82D2D)
-      ..strokeWidth = 4
-      ..strokeCap = StrokeCap.round;
-    final needleStart = Offset(centerX, centerY);
-    final needleEnd = Offset(
-      centerX + (radius * 0.5) * cos(needleAngle * pi / 180),
-      centerY + (radius * 0.5) * sin(needleAngle * pi / 180),
-    );
-    canvas.drawLine(needleStart, needleEnd, needlePaint);
+      ..style = PaintingStyle.fill;
+
+    final needlePath = Path()
+      ..moveTo(centerX - 5 * cos((needleAngle + 90) * pi / 180), centerY - 5 * sin((needleAngle + 90) * pi / 180))
+      ..lineTo(centerX + (radius * 0.5) * cos(needleAngle * pi / 180), centerY + (radius * 0.5) * sin(needleAngle * pi / 180))
+      ..lineTo(centerX + 5 * cos((needleAngle - 90) * pi / 180), centerY + 5 * sin((needleAngle - 90) * pi / 180))
+      ..close();
+    canvas.drawPath(needlePath, needlePaint);
 
     // Center hub
     final hubPaint = Paint()..color = const Color(0xFF00CFF8);
     canvas.drawCircle(Offset(centerX, centerY), 12, hubPaint);
-
-    // Fuel gauge
-    final fuelGaugePaint = Paint()..color = const Color(0xFFF82D2D);
-    canvas.drawRect(Rect.fromLTWH(centerX - 40, centerY + 50, 10, 15), fuelGaugePaint);
-
-    final fuelLevelPaint = Paint()..color = const Color(0xFF00CFF8);
-    for (int i = 0; i < 6; i++) {
-      canvas.drawRect(
-        Rect.fromLTWH(centerX - 25 + (i * 12), centerY + 50, 10, 15),
-        fuelLevelPaint,
-      );
-    }
   }
 
   @override

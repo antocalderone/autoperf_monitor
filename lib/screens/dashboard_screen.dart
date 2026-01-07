@@ -176,7 +176,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
           children: [
             // GPS Precision Indicator
             Align(
-              alignment: Alignment.centerRight,
+              alignment: Alignment.center,
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: Text(
@@ -288,26 +288,29 @@ class _MetricCard extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.white70,
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.white70,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              '${value.toStringAsFixed(1)} $unit',
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+              const SizedBox(height: 8),
+              Text(
+                '${value.toStringAsFixed(1)} $unit',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -1,10 +1,9 @@
 import 'dart:math';
+import 'package:autoperf_monitor/utils/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:intl/intl.dart';
 import 'package:autoperf_monitor/database/database_helper.dart';
 import 'package:autoperf_monitor/models/driving_session.dart';
-import 'package:autoperf_monitor/models/gps_point.dart';
 import 'package:autoperf_monitor/models/fuel_record.dart'; // Import FuelRecord
 import 'package:autoperf_monitor/services/export_service.dart';
 import 'package:autoperf_monitor/screens/maintenance_screen.dart'; // Import MaintenanceScreen
@@ -203,12 +202,12 @@ class _HistoryStatsScreenState extends State<HistoryStatsScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Sessione: ${DateFormat('yyyy-MM-dd HH:mm').format(session.startTime)}',
+                                'Sessione: ${DateFormatter.formatFull(session.startTime)}',
                                 style: Theme.of(context).textTheme.titleMedium,
                               ),
                               if (session.endTime != null)
                                 Text(
-                                  'Fine: ${DateFormat('yyyy-MM-dd HH:mm').format(session.endTime!)}',
+                                  'Fine: ${DateFormatter.formatFull(session.endTime!)}',
                                   style: Theme.of(context).textTheme.bodySmall,
                                 ),
                               Text(
@@ -221,59 +220,59 @@ class _HistoryStatsScreenState extends State<HistoryStatsScreen> {
                               ),
                               const SizedBox(height: 10),
                               speedTimeSpots.isNotEmpty
-                                ? SizedBox(
-                                    height: 200,
-                                    child: LineChart(
-                                      LineChartData(
-                                        gridData: const FlGridData(show: false),
-                                        titlesData: FlTitlesData(
-                                          leftTitles: AxisTitles(
-                                            axisNameWidget: const Text('Velocità (km/h)'),
-                                            axisNameSize: 24,
-                                            sideTitles: SideTitles(showTitles: true, reservedSize: 40, getTitlesWidget: (value, meta) => Text(value.toInt().toString())),
-                                          ),
-                                          bottomTitles: AxisTitles(
-                                            axisNameWidget: const Text('Ora'),
-                                            axisNameSize: 24,
-                                            sideTitles: SideTitles(
-                                              showTitles: true,
-                                              reservedSize: 30,
-                                              getTitlesWidget: (value, meta) {
-                                                final date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
-                                                return SideTitleWidget(
-                                                  meta: meta,
-                                                  space: 8.0,
-                                                  child: Text(DateFormat('HH:mm').format(date), style: const TextStyle(fontSize: 10)),
-                                                );
-                                              },
+                                  ? SizedBox(
+                                      height: 200,
+                                      child: LineChart(
+                                        LineChartData(
+                                          gridData: const FlGridData(show: false),
+                                          titlesData: FlTitlesData(
+                                            leftTitles: AxisTitles(
+                                              axisNameWidget: const Text('Velocità (km/h)'),
+                                              axisNameSize: 24,
+                                              sideTitles: SideTitles(showTitles: true, reservedSize: 40, getTitlesWidget: (value, meta) => Text(value.toInt().toString())),
                                             ),
+                                            bottomTitles: AxisTitles(
+                                              axisNameWidget: const Text('Ora'),
+                                              axisNameSize: 24,
+                                              sideTitles: SideTitles(
+                                                showTitles: true,
+                                                reservedSize: 30,
+                                                getTitlesWidget: (value, meta) {
+                                                  final date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
+                                                  return SideTitleWidget(
+                                                    meta: meta,
+                                                    space: 8.0,
+                                                    child: Text(DateFormatter.formatAnoMonthDay(date), style: const TextStyle(fontSize: 10)),
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
                                           ),
-                                          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                                          topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                                        ),
-                                        borderData: FlBorderData(
-                                          show: true,
-                                          border: Border.all(color: const Color(0xff37434d), width: 1),
-                                        ),
-                                        minX: minX,
-                                        maxX: maxX,
-                                        minY: minY > 0 ? minY * 0.9 : 0, // 10% padding
-                                        maxY: maxY * 1.1, // 10% padding
-                                        lineBarsData: [
-                                          LineChartBarData(
-                                            spots: speedTimeSpots,
-                                            isCurved: true,
-                                            color: Colors.lightBlueAccent,
-                                            barWidth: 3,
-                                            isStrokeCapRound: true,
-                                            dotData: const FlDotData(show: false),
-                                            belowBarData: BarAreaData(show: false),
+                                          borderData: FlBorderData(
+                                            show: true,
+                                            border: Border.all(color: const Color(0xff37434d), width: 1),
                                           ),
-                                        ],
+                                          minX: minX,
+                                          maxX: maxX,
+                                          minY: minY > 0 ? minY * 0.9 : 0, // 10% padding
+                                          maxY: maxY * 1.1, // 10% padding
+                                          lineBarsData: [
+                                            LineChartBarData(
+                                              spots: speedTimeSpots,
+                                              isCurved: true,
+                                              color: Colors.lightBlueAccent,
+                                              barWidth: 3,
+                                              isStrokeCapRound: true,
+                                              dotData: const FlDotData(show: false),
+                                              belowBarData: BarAreaData(show: false),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  )
-                                : const Text('Nessun dato di velocità disponibile per questa sessione.'),
+                                    )
+                                  : const Text('Nessun dato di velocità disponibile per questa sessione.'),
                             ],
                           ),
                         ),
