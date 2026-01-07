@@ -255,15 +255,14 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                 ),
               ],
             ),
-            const SizedBox(height: 20),
-            FloatingActionButton.extended(
-              onPressed: _toggleMonitoring,
-              label: Text(_isMonitoring ? 'ARRESTA' : 'AVVIA'),
-              icon: Icon(_isMonitoring ? Icons.stop : Icons.play_arrow),
-              backgroundColor: _isMonitoring ? Colors.red : Colors.green,
-            ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _toggleMonitoring,
+        label: Text(_isMonitoring ? 'ARRESTA' : 'AVVIA'),
+        icon: Icon(_isMonitoring ? Icons.stop : Icons.play_arrow),
+        backgroundColor: _isMonitoring ? Colors.red : Colors.green,
       ),
     );
   }
@@ -288,29 +287,28 @@ class _MetricCard extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.white70,
-                ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.white70,
               ),
-              const SizedBox(height: 8),
-              Text(
-                '${value.toStringAsFixed(1)} $unit',
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '${value.toStringAsFixed(1)} $unit',
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
-            ],
-          ),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );
