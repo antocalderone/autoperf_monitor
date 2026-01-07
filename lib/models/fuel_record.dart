@@ -1,11 +1,9 @@
 // lib/models/fuel_record.dart
 enum FuelType {
-  petrol,
+  benzina,
   diesel,
-  electric, // Although not 'fuel', good for futureproofing
-  lpg,
-  cng,
-  other,
+  gpl,
+  metano,
 }
 
 class FuelRecord {
