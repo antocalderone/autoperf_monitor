@@ -172,6 +172,15 @@ class DatabaseHelper {
     return sessions;
   }
 
+  Future<void> deleteDrivingSession(int id) async {
+    final db = await database;
+    await db.delete(
+      'driving_sessions',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
   Future<void> deleteAllDrivingSessions() async {
     final db = await database;
     await db.delete('driving_sessions');
