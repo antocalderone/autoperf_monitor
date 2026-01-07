@@ -211,29 +211,6 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                 alignment: Alignment.center,
                 children: [
                   AnalogSpeedometer(speed: speedToDisplay),
-                  ScaleTransition(
-                    scale: _scaleAnimation, // Corrected to use _scaleAnimation
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          '${speedToDisplay.toInt()}',
-                          style: const TextStyle(
-                            fontSize: 48,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const Text(
-                          'km/h',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white70,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),
