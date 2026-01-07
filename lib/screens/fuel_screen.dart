@@ -77,7 +77,7 @@ class _FuelScreenState extends State<FuelScreen> {
       _mileageController.clear();
       setState(() {
         _selectedDate = DateTime.now();
-        _selectedFuelType = FuelType.petrol;
+        _selectedFuelType = FuelType.benzina;
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
