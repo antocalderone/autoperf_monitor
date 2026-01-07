@@ -79,6 +79,44 @@ class _HistoryStatsScreenState extends State<HistoryStatsScreen> {
     }
   }
 
+  Future<void> _resetSessions() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Conferma'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Sei sicuro di voler eliminare tutte le sessioni di guida?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Annulla'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Elimina'),
+              onPressed: () async {
+                await _databaseHelper.deleteAllDrivingSessions();
+                _loadData();
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Tutte le sessioni di guida sono state eliminate.')),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,6 +164,15 @@ class _HistoryStatsScreenState extends State<HistoryStatsScreen> {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton.icon(
+              onPressed: _resetSessions,
+              icon: const Icon(Icons.delete_forever),
+              label: const Text('Azzera Sessioni'),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white, backgroundColor: Colors.redAccent,
+              ),
             ),
             const Divider(height: 40),
             Text(

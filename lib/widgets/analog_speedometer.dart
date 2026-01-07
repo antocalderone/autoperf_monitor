@@ -108,10 +108,6 @@ class _SpeedometerPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
 
-    final Paint needlePaint = Paint()
-      ..color = primaryColor
-      ..style = PaintingStyle.fill;
-
     // Draw dial arc (270 degrees from -225 to 45 degrees)
     canvas.drawArc(
       Rect.fromCircle(center: Offset(centerX, centerY), radius: radius),
@@ -157,12 +153,12 @@ class _SpeedometerPainter extends CustomPainter {
         centerY + radius * sin(angle * (pi / 180)),
       );
       final tickEnd = Offset(
-        centerX + (radius - (i % 50 == 0 ? 15 : 8)) * cos(angle * (pi / 180)),
-        centerY + (radius - (i % 50 == 0 ? 15 : 8)) * sin(angle * (pi / 180)),
+        centerX + (radius - (i % 20 == 0 ? 15 : 8)) * cos(angle * (pi / 180)),
+        centerY + (radius - (i % 20 == 0 ? 15 : 8)) * sin(angle * (pi / 180)),
       );
       canvas.drawLine(tickStart, tickEnd, tickPaint);
 
-      if (i % 50 == 0) {
+      if (i % 20 == 0) {
         final TextPainter tp = TextPainter(
           text: TextSpan(
             text: '$i',
@@ -176,9 +172,6 @@ class _SpeedometerPainter extends CustomPainter {
           centerX + (radius - 30) * cos(angle * (pi / 180)) - tp.width / 2,
           centerY + (radius - 30) * sin(angle * (pi / 180)) - tp.height / 2,
         );
-        canvas.drawCircle(Offset(centerX, centerY), 5, Paint()..color=Colors.white);
-        canvas.drawCircle(Offset(centerX, centerY), 3, Paint()..color=Colors.black);
-
         tp.paint(canvas, textOffset);
       }
     }
@@ -186,16 +179,23 @@ class _SpeedometerPainter extends CustomPainter {
 
     // Draw needle
     final needleAngle = -225 + (speed / maxSpeed * 270);
-    final needlePath = Path()
-      ..moveTo(centerX - 5 * cos((needleAngle - 90) * (pi / 180)),
-          centerY - 5 * sin((needleAngle - 90) * (pi / 180)))
-      ..lineTo(centerX + (radius * 0.7) * cos(needleAngle * (pi / 180)),
-          centerY + (radius * 0.7) * sin(needleAngle * (pi / 180)))
-      ..lineTo(centerX + 5 * cos((needleAngle + 90) * (pi / 180)),
-          centerY + 5 * sin((needleAngle + 90) * (pi / 180)))
-      ..close();
+    final needlePaint = Paint()
+      ..color = primaryColor
+      ..style = PaintingStyle.fill;
 
-    canvas.drawPath(needlePath, needlePaint);
+    final needlePath = Path();
+    needlePath.moveTo(centerX, centerY);
+    needlePath.lineTo(
+      centerX + radius * 0.8 * cos(needleAngle * pi / 180),
+      centerY + radius * 0.8 * sin(needleAngle * pi / 180),
+    );
+    needlePath.close();
+
+    canvas.drawPath(needlePath, needlePaint..strokeWidth = 4);
+
+    // Draw center hub
+    canvas.drawCircle(Offset(centerX, centerY), 10, Paint()..color = Colors.white);
+    canvas.drawCircle(Offset(centerX, centerY), 8, Paint()..color = Colors.black);
   }
 
   @override
