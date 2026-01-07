@@ -95,15 +95,15 @@ class _MainAppState extends State<MainApp> {
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.speed),
-              label: 'Dashboard',
+              label: 'Cruscotto',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.local_gas_station),
-              label: 'Fuel',
+              label: 'Rifornimento',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.history),
-              label: 'History',
+              label: 'Cronologia',
             ),
           ],
           currentIndex: _selectedIndex,

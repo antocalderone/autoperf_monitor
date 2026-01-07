@@ -81,7 +81,7 @@ class _FuelScreenState extends State<FuelScreen> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Fuel record added successfully!')),
+        const SnackBar(content: Text('Rifornimento aggiunto con successo!')),
       );
     }
   }
@@ -165,7 +165,7 @@ class _FuelScreenState extends State<FuelScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Fuel Tracking'),
+        title: const Text('Rifornimento'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -173,7 +173,7 @@ class _FuelScreenState extends State<FuelScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Add New Refueling',
+              'Aggiungi Rifornimento',
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 20),
@@ -184,7 +184,7 @@ class _FuelScreenState extends State<FuelScreen> {
                 children: [
                   // Date Picker
                   ListTile(
-                    title: Text('Date: ${DateFormat('yyyy-MM-dd').format(_selectedDate)}'),
+                    title: Text('Data: ${DateFormat('yyyy-MM-dd').format(_selectedDate)}'),
                     trailing: const Icon(Icons.calendar_today),
                     onTap: () => _selectDate(context),
                   ),
@@ -193,16 +193,16 @@ class _FuelScreenState extends State<FuelScreen> {
                   TextFormField(
                     controller: _amountController,
                     decoration: const InputDecoration(
-                      labelText: 'Amount (€)',
+                      labelText: 'Importo (€)',
                       border: OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter amount';
+                        return 'Inserisci l\'importo';
                       }
                       if (double.tryParse(value) == null) {
-                        return 'Please enter a valid number';
+                        return 'Inserisci un numero valido';
                       }
                       return null;
                     },
@@ -212,16 +212,16 @@ class _FuelScreenState extends State<FuelScreen> {
                   TextFormField(
                     controller: _litersController,
                     decoration: const InputDecoration(
-                      labelText: 'Liters',
+                      labelText: 'Litri',
                       border: OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter liters';
+                        return 'Inserisci i litri';
                       }
                       if (double.tryParse(value) == null) {
-                        return 'Please enter a valid number';
+                        return 'Inserisci un numero valido';
                       }
                       return null;
                     },
@@ -231,16 +231,16 @@ class _FuelScreenState extends State<FuelScreen> {
                   TextFormField(
                     controller: _mileageController,
                     decoration: const InputDecoration(
-                      labelText: 'Current Mileage (km)',
+                      labelText: 'Chilometraggio (km)',
                       border: OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter mileage';
+                        return 'Inserisci il chilometraggio';
                       }
                       if (double.tryParse(value) == null) {
-                        return 'Please enter a valid number';
+                        return 'Inserisci un numero valido';
                       }
                       return null;
                     },
@@ -250,7 +250,7 @@ class _FuelScreenState extends State<FuelScreen> {
                   DropdownButtonFormField<FuelType>(
                     value: _selectedFuelType,
                     decoration: const InputDecoration(
-                      labelText: 'Fuel Type',
+                      labelText: 'Tipo Carburante',
                       border: OutlineInputBorder(),
                     ),
                     items: FuelType.values.map((FuelType type) {
@@ -268,7 +268,7 @@ class _FuelScreenState extends State<FuelScreen> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _submitForm,
-                    child: const Text('Add Refueling'),
+                    child: const Text('Aggiungi Rifornimento'),
                   ),
                 ],
               ),
@@ -276,24 +276,24 @@ class _FuelScreenState extends State<FuelScreen> {
             const Divider(height: 40),
             // Fuel Statistics
             Text(
-              'Consumption Statistics',
+              'Statistiche Consumo',
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 20),
             _StatisticCard(
-              title: 'Avg Consumption',
+              title: 'Consumo Medio',
               value: stats.avgConsumption,
               unit: 'km/l',
               format: true,
             ),
             _StatisticCard(
-              title: 'Cost per Km',
+              title: 'Costo per Km',
               value: stats.costPerKm,
               unit: '€/km',
               format: true,
             ),
             _StatisticCard(
-              title: 'Estimated Range',
+              title: 'Autonomia Stimata',
               value: stats.estimatedRange,
               unit: 'km',
               format: true,
@@ -301,7 +301,7 @@ class _FuelScreenState extends State<FuelScreen> {
             const Divider(height: 40),
             // Historical Fuel Consumption Chart
             Text(
-              'Historical Consumption (km/l)',
+              'Consumo Storico (km/l)',
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 20),
@@ -323,7 +323,7 @@ class _FuelScreenState extends State<FuelScreen> {
                           return SideTitleWidget(
                             meta: meta, // Added meta parameter
                             space: 8.0,
-                            child: Text(DateFormat('MMM dd').format(date), style: const TextStyle(fontSize: 10)),
+                            child: Text(DateFormat('dd MMM').format(date), style: const TextStyle(fontSize: 10)),
                           );
                         },
                       ),
@@ -352,12 +352,12 @@ class _FuelScreenState extends State<FuelScreen> {
             const Divider(height: 40),
             // List of Refueling Records
             Text(
-              'Refueling History',
+              'Cronologia Rifornimenti',
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 20),
             _fuelRecords.isEmpty
-                ? const Center(child: Text('No refueling records yet.'))
+                ? const Center(child: Text('Nessun rifornimento registrato.'))
                 : ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -368,7 +368,7 @@ class _FuelScreenState extends State<FuelScreen> {
                         margin: const EdgeInsets.symmetric(vertical: 8.0),
                         child: ListTile(
                           title: Text('${DateFormat('yyyy-MM-dd').format(record.date)} - ${record.fuelType.name.toUpperCase()}'),
-                          subtitle: Text('Liters: ${record.liters.toStringAsFixed(2)} | Amount: €${record.amount.toStringAsFixed(2)} | Mileage: ${record.mileage.toStringAsFixed(0)} km'),
+                          subtitle: Text('Litri: ${record.liters.toStringAsFixed(2)} | Importo: €${record.amount.toStringAsFixed(2)} | Chilometraggio: ${record.mileage.toStringAsFixed(0)} km'),
                           trailing: IconButton(
                             icon: const Icon(Icons.delete, color: Colors.redAccent),
                             onPressed: () async {
@@ -376,7 +376,7 @@ class _FuelScreenState extends State<FuelScreen> {
                                 await _databaseHelper.deleteFuelRecord(record.id!);
                                 _loadFuelRecords();
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Fuel record deleted!')),
+                                  const SnackBar(content: Text('Rifornimento eliminato!')),
                                 );
                               }
                             },

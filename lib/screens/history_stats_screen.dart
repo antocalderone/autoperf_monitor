@@ -50,13 +50,13 @@ class _HistoryStatsScreenState extends State<HistoryStatsScreen> {
       final path = await _exportService.exportDrivingSessionsToCsv(_drivingSessions);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Driving sessions exported to: $path')),
+          SnackBar(content: Text('Sessioni di guida esportate in: $path')),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error exporting driving sessions: $e')),
+          SnackBar(content: Text('Errore durante l\'esportazione delle sessioni di guida: $e')),
         );
       }
     }
@@ -67,13 +67,13 @@ class _HistoryStatsScreenState extends State<HistoryStatsScreen> {
       final path = await _exportService.exportFuelRecordsToPdf(_fuelRecords);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Fuel records exported to: $path')),
+          SnackBar(content: Text('Record di carburante esportati in: $path')),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error exporting fuel records: $e')),
+          SnackBar(content: Text('Errore durante l\'esportazione dei record di carburante: $e')),
         );
       }
     }
@@ -83,7 +83,7 @@ class _HistoryStatsScreenState extends State<HistoryStatsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('History & Statistics'),
+        title: const Text('Cronologia e Statistiche'),
         actions: [
           IconButton(
             icon: const Icon(Icons.build),
@@ -93,7 +93,7 @@ class _HistoryStatsScreenState extends State<HistoryStatsScreen> {
                 MaterialPageRoute(builder: (context) => const MaintenanceScreen()),
               );
             },
-            tooltip: 'Maintenance Records',
+            tooltip: 'Registro Manutenzione',
           ),
         ],
       ),
@@ -103,7 +103,7 @@ class _HistoryStatsScreenState extends State<HistoryStatsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Export Data',
+              'Esporta Dati',
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 10),
@@ -114,7 +114,7 @@ class _HistoryStatsScreenState extends State<HistoryStatsScreen> {
                   child: ElevatedButton.icon(
                     onPressed: _exportDrivingSessions,
                     icon: const Icon(Icons.download),
-                    label: const Text('Export Sessions (CSV)'),
+                    label: const Text('Esporta Sessioni (CSV)'),
                   ),
                 ),
                 const SizedBox(width: 10), // Add some spacing between buttons
@@ -122,19 +122,19 @@ class _HistoryStatsScreenState extends State<HistoryStatsScreen> {
                   child: ElevatedButton.icon(
                     onPressed: _exportFuelRecords,
                     icon: const Icon(Icons.download),
-                    label: const Text('Export Fuel (PDF)'),
+                    label: const Text('Esporta Carburante (PDF)'),
                   ),
                 ),
               ],
             ),
             const Divider(height: 40),
             Text(
-              'Recorded Driving Sessions',
+              'Sessioni di Guida Registrate',
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 20),
             _drivingSessions.isEmpty
-                ? const Center(child: Text('No driving sessions recorded yet.'))
+                ? const Center(child: Text('Nessuna sessione di guida registrata.'))
                 : ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -156,20 +156,20 @@ class _HistoryStatsScreenState extends State<HistoryStatsScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Session: ${DateFormat('yyyy-MM-dd HH:mm').format(session.startTime)}',
+                                'Sessione: ${DateFormat('yyyy-MM-dd HH:mm').format(session.startTime)}',
                                 style: Theme.of(context).textTheme.titleMedium,
                               ),
                               if (session.endTime != null)
                                 Text(
-                                  'End: ${DateFormat('yyyy-MM-dd HH:mm').format(session.endTime!)}',
+                                  'Fine: ${DateFormat('yyyy-MM-dd HH:mm').format(session.endTime!)}',
                                   style: Theme.of(context).textTheme.bodySmall,
                                 ),
                               Text(
-                                'Distance: ${session.metrics.distanceTraveled.toStringAsFixed(2)} km',
+                                'Distanza: ${session.metrics.distanceTraveled.toStringAsFixed(2)} km',
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               Text(
-                                'Avg Speed: ${session.metrics.averageSpeed.toStringAsFixed(1)} km/h',
+                                'Velocità Media: ${session.metrics.averageSpeed.toStringAsFixed(1)} km/h',
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               const SizedBox(height: 10),
@@ -181,12 +181,12 @@ class _HistoryStatsScreenState extends State<HistoryStatsScreen> {
                                         gridData: const FlGridData(show: false),
                                         titlesData: FlTitlesData(
                                           leftTitles: AxisTitles(
-                                            axisNameWidget: const Text('Speed (km/h)'),
+                                            axisNameWidget: const Text('Velocità (km/h)'),
                                             axisNameSize: 24,
                                             sideTitles: SideTitles(showTitles: true, reservedSize: 40, getTitlesWidget: (value, meta) => Text(value.toInt().toString())),
                                           ),
                                           bottomTitles: AxisTitles(
-                                            axisNameWidget: const Text('Time'),
+                                            axisNameWidget: const Text('Ora'),
                                             axisNameSize: 24,
                                             sideTitles: SideTitles(
                                               showTitles: true,
@@ -226,7 +226,7 @@ class _HistoryStatsScreenState extends State<HistoryStatsScreen> {
                                       ),
                                     ),
                                   )
-                                : const Text('No speed data available for this session.'),
+                                : const Text('Nessun dato di velocità disponibile per questa sessione.'),
                             ],
                           ),
                         ),
