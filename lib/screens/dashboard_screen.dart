@@ -211,6 +211,29 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                 alignment: Alignment.center,
                 children: [
                   AnalogSpeedometer(speed: speedToDisplay),
+                  GestureDetector(
+                    onTap: _toggleMonitoring,
+                    child: Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: _isMonitoring ? Colors.red : Colors.green,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: (_isMonitoring ? Colors.red : Colors.green).withAlpha(100),
+                            blurRadius: 10.0,
+                            spreadRadius: 5.0,
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        _isMonitoring ? Icons.stop : Icons.play_arrow,
+                        color: Colors.white,
+                        size: 40,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -254,12 +277,6 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _toggleMonitoring,
-        label: Text(_isMonitoring ? 'ARRESTA' : 'AVVIA'),
-        icon: Icon(_isMonitoring ? Icons.stop : Icons.play_arrow),
-        backgroundColor: _isMonitoring ? Colors.red : Colors.green,
       ),
     );
   }
