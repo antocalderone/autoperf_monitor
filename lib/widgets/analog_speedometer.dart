@@ -89,20 +89,12 @@ class _SpeedometerPainter extends CustomPainter {
     final backgroundPaint = Paint()..color = Colors.black;
     canvas.drawCircle(Offset(centerX, centerY), radius, backgroundPaint);
 
-    // Outer rings
+    // Outer ring
     final outerRingPaint = Paint()
-      ..color = const Color(0xFFF82D2D)
+      ..color = Colors.white
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2);
+      ..strokeWidth = 2;
     canvas.drawCircle(Offset(centerX, centerY), radius - 2, outerRingPaint);
-
-    final innerRingPaint = Paint()
-      ..color = const Color(0xFF00CFF8)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2);
-    canvas.drawCircle(Offset(centerX, centerY), radius - 6, innerRingPaint);
 
     // Draw tick marks and labels
     for (int i = 0; i <= maxSpeed; i += 10) {
@@ -110,7 +102,7 @@ class _SpeedometerPainter extends CustomPainter {
       final isMajorTick = i % 20 == 0;
       final tickLength = isMajorTick ? 20.0 : 10.0;
       final tickPaint = Paint()
-        ..color = isMajorTick ? Colors.yellow : Colors.white
+        ..color = Colors.white
         ..strokeWidth = isMajorTick ? 4 : 2;
 
       final tickStart = Offset(
@@ -141,61 +133,18 @@ class _SpeedometerPainter extends CustomPainter {
       }
     }
 
-    // Inner arc
-    final innerArcPaint = Paint()
-      ..color = const Color(0xFF00CFF8)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 10
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5);
-    canvas.drawArc(
-      Rect.fromCircle(center: Offset(centerX, centerY), radius: radius * 0.6),
-      -210 * pi / 180,
-      120 * pi / 180,
-      false,
-      innerArcPaint,
-    );
-
-    final redArcPaint = Paint()
-      ..color = const Color(0xFFF82D2D)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 10
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5);
-    canvas.drawArc(
-      Rect.fromCircle(center: Offset(centerX, centerY), radius: radius * 0.6),
-      -90 * pi / 180,
-      120 * pi / 180,
-      false,
-      redArcPaint,
-    );
-
-    // "km/h" text
-    final kmhPainter = TextPainter(
-      text: const TextSpan(
-        text: 'km/h',
-        style: TextStyle(color: Colors.white, fontSize: 14),
-      ),
-      textAlign: TextAlign.center,
-      textDirection: TextDirection.ltr,
-    );
-    kmhPainter.layout();
-    kmhPainter.paint(canvas, Offset(centerX - kmhPainter.width / 2, centerY - 30));
-
     // Needle
     final needleAngle = -210 + (speed / maxSpeed * 240);
     final needlePaint = Paint()
-      ..color = const Color(0xFFF82D2D)
-      ..style = PaintingStyle.fill;
-
-    final needlePath = Path()
-      ..moveTo(centerX - 5 * cos((needleAngle + 90) * pi / 180), centerY - 5 * sin((needleAngle + 90) * pi / 180))
-      ..lineTo(centerX + (radius * 0.5) * cos(needleAngle * pi / 180), centerY + (radius * 0.5) * sin(needleAngle * pi / 180))
-      ..lineTo(centerX + 5 * cos((needleAngle - 90) * pi / 180), centerY + 5 * sin((needleAngle - 90) * pi / 180))
-      ..close();
-    canvas.drawPath(needlePath, needlePaint);
-
-    // Center hub
-    final hubPaint = Paint()..color = const Color(0xFF00CFF8);
-    canvas.drawCircle(Offset(centerX, centerY), 12, hubPaint);
+      ..color = Colors.red
+      ..strokeWidth = 4
+      ..strokeCap = StrokeCap.round;
+    final needleStart = Offset(centerX, centerY);
+    final needleEnd = Offset(
+      centerX + (radius * 0.7) * cos(needleAngle * pi / 180),
+      centerY + (radius * 0.7) * sin(needleAngle * pi / 180),
+    );
+    canvas.drawLine(needleStart, needleEnd, needlePaint);
   }
 
   @override
