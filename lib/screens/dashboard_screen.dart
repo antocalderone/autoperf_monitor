@@ -215,43 +215,40 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
               ),
             ),
             const SizedBox(height: 20),
-            // Metric Cards
-            GridView.count(
+            // Metric List
+            ListView(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 3,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
               children: [
-                _MetricCard(
-                  title: 'Velocità',
-                  value: _currentGpsSpeed,
-                  unit: 'km/h',
+                _MetricRow(
+                  icon: Icons.speed,
+                  label: 'Velocità',
+                  value: '${_currentGpsSpeed.toStringAsFixed(1)} km/h',
                 ),
-                _MetricCard(
-                  title: 'Altitudine',
-                  value: _currentMetrics.altitude,
-                  unit: 'm',
+                _MetricRow(
+                  icon: Icons.landscape,
+                  label: 'Altitudine',
+                  value: '${_currentMetrics.altitude.toStringAsFixed(1)} m',
                 ),
-                _MetricCard(
-                  title: 'Velocità media',
-                  value: _currentMetrics.averageSpeed,
-                  unit: 'km/h',
+                _MetricRow(
+                  icon: Icons.av_timer,
+                  label: 'Velocità media',
+                  value: '${_currentMetrics.averageSpeed.toStringAsFixed(1)} km/h',
                 ),
-                _MetricCard(
-                  title: 'Velocità minima',
-                  value: _currentMetrics.minSpeed,
-                  unit: 'km/h',
+                _MetricRow(
+                  icon: Icons.arrow_downward,
+                  label: 'Velocità minima',
+                  value: '${_currentMetrics.minSpeed.toStringAsFixed(1)} km/h',
                 ),
-                _MetricCard(
-                  title: 'Velocità massima',
-                  value: _currentMetrics.maxSpeed,
-                  unit: 'km/h',
+                _MetricRow(
+                  icon: Icons.arrow_upward,
+                  label: 'Velocità massima',
+                  value: '${_currentMetrics.maxSpeed.toStringAsFixed(1)} km/h',
                 ),
-                _MetricCard(
-                  title: 'Distanza',
-                  value: _currentMetrics.distanceTraveled,
-                  unit: 'km',
+                _MetricRow(
+                  icon: Icons.directions_car,
+                  label: 'Distanza',
+                  value: '${_currentMetrics.distanceTraveled.toStringAsFixed(2)} km',
                 ),
               ],
             ),
@@ -268,48 +265,43 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
   }
 }
 
-class _MetricCard extends StatelessWidget {
-  final String title;
-  final double value;
-  final String unit;
+class _MetricRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
 
-  const _MetricCard({
-    required this.title,
+  const _MetricRow({
+    required this.icon,
+    required this.label,
     required this.value,
-    required this.unit,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.grey[850],
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              title,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.white70),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              label,
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 16,
                 color: Colors.white70,
               ),
-              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
-            Text(
-              '${value.toStringAsFixed(1)} $unit',
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-              textAlign: TextAlign.center,
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
