@@ -172,6 +172,11 @@ class DatabaseHelper {
     return sessions;
   }
 
+  Future<void> deleteAllDrivingSessions() async {
+    final db = await database;
+    await db.delete('driving_sessions');
+  }
+
   Future<FuelRecord?> _getFuelRecordById(int id) async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(

@@ -219,7 +219,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
             GridView.count(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
+              crossAxisCount: 3,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
               children: [
@@ -258,7 +258,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
             const SizedBox(height: 20),
             FloatingActionButton.extended(
               onPressed: _toggleMonitoring,
-              label: Text(_isMonitoring ? 'ARRESTA Sessione' : 'AVVIA Sessione'),
+              label: Text(_isMonitoring ? 'ARRESTA' : 'AVVIA'),
               icon: Icon(_isMonitoring ? Icons.stop : Icons.play_arrow),
               backgroundColor: _isMonitoring ? Colors.red : Colors.green,
             ),
