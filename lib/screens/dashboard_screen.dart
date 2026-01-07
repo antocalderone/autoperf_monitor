@@ -214,8 +214,8 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                   GestureDetector(
                     onTap: _toggleMonitoring,
                     child: Container(
-                      width: 80,
-                      height: 80,
+                      width: 60,
+                      height: 60,
                       decoration: BoxDecoration(
                         color: _isMonitoring ? Colors.red : Colors.green,
                         shape: BoxShape.circle,
@@ -230,7 +230,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                       child: Icon(
                         _isMonitoring ? Icons.stop : Icons.play_arrow,
                         color: Colors.white,
-                        size: 40,
+                        size: 30,
                       ),
                     ),
                   ),
