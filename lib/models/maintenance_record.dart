@@ -1,5 +1,5 @@
 // lib/models/maintenance_record.dart
-import 'package:intl/intl.dart';
+import 'package.intl/intl.dart';
 
 enum MaintenanceType {
   oilChange,
@@ -8,6 +8,27 @@ enum MaintenanceType {
   airFilterReplacement,
   sparkPlugReplacement,
   other,
+}
+
+extension MaintenanceTypeExtension on MaintenanceType {
+  String get displayName {
+    switch (this) {
+      case MaintenanceType.oilChange:
+        return 'Cambio Olio';
+      case MaintenanceType.tireRotation:
+        return 'Rotazione Pneumatici';
+      case MaintenanceType.brakeCheck:
+        return 'Controllo Freni';
+      case MaintenanceType.airFilterReplacement:
+        return 'Sostituzione Filtro Aria';
+      case MaintenanceType.sparkPlugReplacement:
+        return 'Sostituzione Candele';
+      case MaintenanceType.other:
+        return 'Altro';
+      default:
+        return '';
+    }
+  }
 }
 
 class MaintenanceRecord {

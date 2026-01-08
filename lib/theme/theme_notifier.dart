@@ -17,25 +17,61 @@ class ThemeNotifier with ChangeNotifier {
   Color get primaryColor => _primaryColor;
   ThemeData get getTheme => _themeData ?? (_isDarkMode ? darkTheme : lightTheme);
 
-  ThemeData get lightTheme => ThemeData(
-    brightness: Brightness.light,
-    primaryColor: _primaryColor,
-    colorScheme: ColorScheme.fromSeed(
+  ThemeData get lightTheme {
+    final colorScheme = ColorScheme.fromSeed(
       seedColor: _primaryColor,
       brightness: Brightness.light,
-    ),
-    useMaterial3: true,
-  );
+    );
+    return ThemeData(
+      brightness: Brightness.light,
+      primaryColor: _primaryColor,
+      colorScheme: colorScheme,
+      scaffoldBackgroundColor: Colors.grey[200],
+      appBarTheme: AppBarTheme(
+        backgroundColor: _primaryColor,
+        foregroundColor: Colors.white,
+      ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: Colors.white,
+        selectedItemColor: _primaryColor,
+        unselectedItemColor: Colors.grey[600],
+      ),
+      cardTheme: CardTheme(
+        color: Colors.white,
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      useMaterial3: true,
+    );
+  }
 
-  ThemeData get darkTheme => ThemeData(
-    brightness: Brightness.dark,
-    primaryColor: _primaryColor,
-    colorScheme: ColorScheme.fromSeed(
+  ThemeData get darkTheme {
+    final colorScheme = ColorScheme.fromSeed(
       seedColor: _primaryColor,
       brightness: Brightness.dark,
-    ),
-    useMaterial3: true,
-  );
+    );
+    return ThemeData(
+      brightness: Brightness.dark,
+      primaryColor: _primaryColor,
+      colorScheme: colorScheme,
+      scaffoldBackgroundColor: const Color(0xFF121212),
+      appBarTheme: AppBarTheme(
+        backgroundColor: const Color(0xFF1F1F1F),
+        foregroundColor: colorScheme.onSurface,
+      ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: const Color(0xFF1F1F1F),
+        selectedItemColor: _primaryColor,
+        unselectedItemColor: Colors.grey[400],
+      ),
+      cardTheme: CardTheme(
+        color: const Color(0xFF1E1E1E),
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      useMaterial3: true,
+    );
+  }
 
   void _loadSettings() async {
     _isDarkMode = await _settingsService.getDarkMode();

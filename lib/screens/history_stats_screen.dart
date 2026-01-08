@@ -15,7 +15,7 @@ class HistoryStatsScreen extends StatefulWidget {
   State<HistoryStatsScreen> createState() => _HistoryStatsScreenState();
 }
 
-class _HistoryStatsScreenState extends State<HistoryStatsScreen> {
+class _HistoryStatsScreenState extends State<HistoryStatsScreen> with WidgetsBindingObserver {
   final DatabaseHelper _databaseHelper = DatabaseHelper();
   final ExportService _exportService = ExportService();
   List<DrivingSession> _drivingSessions = [];
@@ -24,7 +24,21 @@ class _HistoryStatsScreenState extends State<HistoryStatsScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadData();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadData();
+    }
   }
 
   Future<void> _loadData() async {
@@ -238,6 +252,8 @@ class _HistoryStatsScreenState extends State<HistoryStatsScreen> {
                 double minY = speedTimeSpots.isNotEmpty ? speedTimeSpots.map((e) => e.y).reduce(min) : 0;
                 double maxY = speedTimeSpots.isNotEmpty ? speedTimeSpots.map((e) => e.y).reduce(max) : 0;
 
+                final duration = session.endTime?.difference(session.startTime);
+
                 return Card(
                   margin: const EdgeInsets.symmetric(vertical: 16.0),
                   child: Padding(
@@ -265,6 +281,11 @@ class _HistoryStatsScreenState extends State<HistoryStatsScreen> {
                           Text(
                             'Fine: ${DateFormatter.formatFull(session.endTime!)}',
                             style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        if (duration != null)
+                          Text(
+                            'Durata: ${DateFormatter.formatDuration(duration)}',
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         Text(
                           'Distanza: ${session.metrics.distanceTraveled.toStringAsFixed(2)} km',
@@ -294,12 +315,15 @@ class _HistoryStatsScreenState extends State<HistoryStatsScreen> {
                                     showTitles: true,
                                     reservedSize: 30,
                                     getTitlesWidget: (value, meta) {
-                                      final date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
-                                      return SideTitleWidget(
-                                        meta: meta,
-                                        space: 8.0,
-                                        child: Text(DateFormatter.formatAnoMonthDay(date), style: const TextStyle(fontSize: 10)),
-                                      );
+                                      if (value == minX || value == maxX) {
+                                        final date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
+                                        return SideTitleWidget(
+                                          axisSide: meta.axisSide,
+                                          space: 8.0,
+                                          child: Text(DateFormatter.formatHourMinute(date), style: const TextStyle(fontSize: 10)),
+                                        );
+                                      }
+                                      return Container();
                                     },
                                   ),
                                 ),

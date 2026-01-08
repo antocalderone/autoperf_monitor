@@ -138,7 +138,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                     items: MaintenanceType.values.map((MaintenanceType type) {
                       return DropdownMenuItem<MaintenanceType>(
                         value: type,
-                        child: Text(type.name.replaceAll(RegExp(r'(?<!^)(?=[A-Z])'), ' ')),
+                        child: Text(type.displayName),
                       );
                     }).toList(),
                     onChanged: (MaintenanceType? newValue) {
@@ -199,7 +199,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                 return Card(
                   margin: const EdgeInsets.symmetric(vertical: 8.0),
                   child: ListTile(
-                    title: Text('${record.formattedDate} - ${record.type.name.replaceAll(RegExp(r'(?<!^)(?=[A-Z])'), ' ')}'),
+                    title: Text('${record.formattedDate} - ${record.type.displayName}'),
                     subtitle: Text('Chilometraggio: ${record.formattedMileage} | Costo: ${record.formattedCost}\n${record.description}'),
                     isThreeLine: record.description.isNotEmpty,
                     trailing: IconButton(
