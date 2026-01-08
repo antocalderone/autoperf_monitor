@@ -1,23 +1,40 @@
 // lib/utils/douglas_peucker.dart
 import 'dart:math';
-import 'package:autoperf_monitor/models/gps_point.dart';
+import 'package:cartrackerevo/models/gps_point.dart';
 
 class DouglasPeucker {
-  /// Simplifies a list of [GPSPoint] using the Douglas-Peucker algorithm.
-  ///
-  /// The [epsilon] parameter determines the tolerance of the simplification.
-  /// A higher value of [epsilon] will result in a more simplified trajectory.
   List<GPSPoint> simplify(List<GPSPoint> points, double epsilon) {
     if (points.length < 3) {
-      return List.from(points);
+      return points;
     }
 
+    int firstIndex = 0;
+    int lastIndex = points.length - 1;
+    List<int> indexList = [firstIndex, lastIndex];
+
+    while (points[firstIndex] == points[lastIndex]) {
+      lastIndex--;
+    }
+
+    _douglasPeucker(points, firstIndex, lastIndex, epsilon, indexList);
+
+    List<GPSPoint> simplifiedPoints = [];
+    indexList.sort();
+    for (int index in indexList) {
+      simplifiedPoints.add(points[index]);
+    }
+
+    return simplifiedPoints;
+  }
+
+  void _douglasPeucker(List<GPSPoint> points, int firstIndex, int lastIndex,
+      double epsilon, List<int> indexList) {
     double maxDistance = 0;
     int index = 0;
 
-    for (int i = 1; i < points.length - 1; i++) {
-      double distance =
-          _getPerpendicularDistance(points[i], points.first, points.last);
+    for (int i = firstIndex + 1; i < lastIndex; i++) {
+      double distance = _perpendicularDistance(
+          points[i], points[firstIndex], points[lastIndex]);
       if (distance > maxDistance) {
         maxDistance = distance;
         index = i;
@@ -25,48 +42,49 @@ class DouglasPeucker {
     }
 
     if (maxDistance > epsilon) {
-      List<GPSPoint> firstHalf =
-          simplify(points.sublist(0, index + 1), epsilon);
-      List<GPSPoint> secondHalf = simplify(points.sublist(index), epsilon);
-      return [...firstHalf.sublist(0, firstHalf.length - 1), ...secondHalf];
-    } else {
-      return [points.first, points.last];
+      if (!indexList.contains(index)) {
+        indexList.add(index);
+      }
+      _douglasPeucker(points, firstIndex, index, epsilon, indexList);
+      _douglasPeucker(points, index, lastIndex, epsilon, indexList);
     }
   }
 
-  /// Calculates the perpendicular distance from a [point] to a line segment
-  /// defined by [lineStart] and [lineEnd].
-  double _getPerpendicularDistance(
+  double _perpendicularDistance(
       GPSPoint point, GPSPoint lineStart, GPSPoint lineEnd) {
-    double dx = lineEnd.longitude - lineStart.longitude;
-    double dy = lineEnd.latitude - lineStart.latitude;
+    double dx = lineEnd.latitude - lineStart.latitude;
+    double dy = lineEnd.longitude - lineStart.longitude;
 
-    double lengthSq = dx * dx + dy * dy;
-    if (lengthSq == 0) {
+    if (dx == 0 && dy == 0) {
       return _distance(point, lineStart);
     }
 
-    double t = ((point.longitude - lineStart.longitude) * dx +
-            (point.latitude - lineStart.latitude) * dy) /
-        lengthSq;
-    t = max(0, min(1, t));
+    double t = ((point.latitude - lineStart.latitude) * dx +
+            (point.longitude - lineStart.longitude) * dy) /
+        (dx * dx + dy * dy);
 
-    double closestX = lineStart.longitude + t * dx;
-    double closestY = lineStart.latitude + t * dy;
+    GPSPoint projection;
+    if (t < 0) {
+      projection = lineStart;
+    } else if (t > 1) {
+      projection = lineEnd;
+    } else {
+      projection = GPSPoint(
+        latitude: lineStart.latitude + t * dx,
+        longitude: lineStart.longitude + t * dy,
+        altitude: 0, // Altitude is not used in this 2D distance calculation
+        speed: 0,
+        accuracy: 0,
+        timestamp: DateTime.now(),
+      );
+    }
 
-    return _distanceBetweenCoordinates(
-        point.latitude, point.longitude, closestY, closestX);
+    return _distance(point, projection);
   }
 
-  /// Calculates the distance between two [GPSPoint]s.
   double _distance(GPSPoint p1, GPSPoint p2) {
-    return _distanceBetweenCoordinates(
-        p1.latitude, p1.longitude, p2.latitude, p2.longitude);
-  }
-
-  /// Calculates the distance between two coordinates.
-  double _distanceBetweenCoordinates(
-      double lat1, double lon1, double lat2, double lon2) {
-    return sqrt(pow(lon1 - lon2, 2) + pow(lat1 - lat2, 2));
+    double dx = p1.latitude - p2.latitude;
+    double dy = p1.longitude - p2.longitude;
+    return sqrt(dx * dx + dy * dy);
   }
 }
