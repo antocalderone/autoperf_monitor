@@ -1,3 +1,4 @@
+import 'package:autoperf_monitor/notifiers/history_notifier.dart';
 import 'package:autoperf_monitor/theme/theme_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,8 +9,11 @@ import 'package:autoperf_monitor/services/settings_service.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => ThemeNotifier(SettingsService()),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeNotifier(SettingsService())),
+        ChangeNotifierProvider(create: (_) => HistoryNotifier()),
+      ],
       child: const MainApp(),
     ),
   );

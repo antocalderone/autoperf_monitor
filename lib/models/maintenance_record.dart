@@ -1,5 +1,5 @@
 // lib/models/maintenance_record.dart
-import 'package.intl/intl.dart';
+import 'package:intl/intl.dart';
 
 enum MaintenanceType {
   oilChange,
