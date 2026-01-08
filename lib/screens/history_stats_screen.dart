@@ -320,6 +320,7 @@ class _HistoryStatsScreenState extends State<HistoryStatsScreen> {
                                       if (value == minX || value == maxX) {
                                         final date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
                                         return SideTitleWidget(
+                                          meta: meta,
                                           space: 8.0,
                                           child: Text(DateFormatter.formatHourMinute(date), style: const TextStyle(fontSize: 10)),
                                         );
