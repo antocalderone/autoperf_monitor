@@ -31,7 +31,7 @@ class DatabaseHelper {
     if (databasesPath == null) {
       throw Exception('Unable to get databases path');
     }
-    String path = join(databasesPath, 'autoperf_monitor.db');
+    String path = join(databasesPath, 'cartrackerevo.db');
     return await openDatabase(
       path,
       version: 1,
