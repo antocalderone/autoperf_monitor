@@ -35,7 +35,7 @@
 			containerPortal = 33CC10E52044A3C60003C045 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 33CC10EC2044A3C60003C045;
-			remoteInfo = Runner;
+			remoteInfo = CarTrackerEvo;
 		};
 		33CC111F2044C79F0003C045 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -64,7 +64,7 @@
 		331C80D7294CF71000263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		333000ED22D3DE5D00554162 /* Warnings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Warnings.xcconfig; sourceTree = "<group>"; };
 		335BBD1A22A9A15E00E9071D /* GeneratedPluginRegistrant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneratedPluginRegistrant.swift; sourceTree = "<group>"; };
-		33CC10ED2044A3C60003C045 /* autoperf_monitor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "autoperf_monitor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		33CC10ED2044A3C60003C045 /* CarTrackerEvo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CarTrackerEvo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		33CC10F02044A3C60003C045 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		33CC10F22044A3C60003C045 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Runner/Assets.xcassets; sourceTree = "<group>"; };
 		33CC10F52044A3C60003C045 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -131,7 +131,7 @@
 		33CC10EE2044A3C60003C045 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				33CC10ED2044A3C60003C045 /* autoperf_monitor.app */,
+				33CC10ED2044A3C60003C045 /* CarTrackerEvo.app */,
 				331C80D5294CF71000263BE5 /* RunnerTests.xctest */,
 			);
 			name = Products;
@@ -215,9 +215,9 @@
 			dependencies = (
 				33CC11202044C79F0003C045 /* PBXTargetDependency */,
 			);
-			name = Runner;
-			productName = Runner;
-			productReference = 33CC10ED2044A3C60003C045 /* autoperf_monitor.app */;
+			name = CarTrackerEvo;
+			productName = CarTrackerEvo;
+			productReference = 33CC10ED2044A3C60003C045 /* CarTrackerEvo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -385,10 +385,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.autoperfMonitor.RunnerTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.cartrackerevo.RunnerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/autoperf_monitor.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/autoperf_monitor";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CarTrackerEvo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CarTrackerEvo";
 			};
 			name = Debug;
 		};
@@ -399,10 +399,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.autoperfMonitor.RunnerTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.cartrackerevo.RunnerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/autoperf_monitor.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/autoperf_monitor";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CarTrackerEvo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CarTrackerEvo";
 			};
 			name = Release;
 		};
@@ -413,10 +413,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.autoperfMonitor.RunnerTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.cartrackerevo.RunnerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/autoperf_monitor.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/autoperf_monitor";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CarTrackerEvo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CarTrackerEvo";
 			};
 			name = Profile;
 		};

@@ -1,9 +1,9 @@
 // lib/screens/fuel_screen.dart
-import 'package:autoperf_monitor/utils/date_formatter.dart';
+import 'package:cartrackerevo/utils/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart'; // Import fl_chart
-import 'package:autoperf_monitor/models/fuel_record.dart';
-import 'package:autoperf_monitor/database/database_helper.dart';
+import 'package:cartrackerevo/models/fuel_record.dart';
+import 'package:cartrackerevo/database/database_helper.dart';
 
 class FuelScreen extends StatefulWidget {
   const FuelScreen({super.key});
@@ -359,32 +359,32 @@ class _FuelScreenState extends State<FuelScreen> {
             _fuelRecords.isEmpty
                 ? const Center(child: Text('Nessun rifornimento registrato.'))
                 : ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: _fuelRecords.length,
-              itemBuilder: (context, index) {
-                final record = _fuelRecords[index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: ListTile(
-                    title: Text('${DateFormatter.formatAnoMonthDay(record.date)} - ${record.fuelType.name.toUpperCase()}'),
-                    subtitle: Text('Litri: ${record.liters.toStringAsFixed(2)} | Importo: €${record.amount.toStringAsFixed(2)} | Chilometraggio: ${record.mileage.toStringAsFixed(0)} km'),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.redAccent),
-                      onPressed: () async {
-                        if (record.id != null) {
-                          await _databaseHelper.deleteFuelRecord(record.id!);
-                          _loadFuelRecords();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Rifornimento eliminato!')),
-                          );
-                        }
-                      },
-                    ),
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _fuelRecords.length,
+                    itemBuilder: (context, index) {
+                      final record = _fuelRecords[index];
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: ListTile(
+                          title: Text('${DateFormatter.formatAnoMonthDay(record.date)} - ${record.fuelType.name.toUpperCase()}'),
+                          subtitle: Text('Litri: ${record.liters.toStringAsFixed(2)} | Importo: €${record.amount.toStringAsFixed(2)} | Chilometraggio: ${record.mileage.toStringAsFixed(0)} km'),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.redAccent),
+                            onPressed: () async {
+                              if (record.id != null) {
+                                await _databaseHelper.deleteFuelRecord(record.id!);
+                                _loadFuelRecords();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Rifornimento eliminato!')),
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ],
         ),
       ),

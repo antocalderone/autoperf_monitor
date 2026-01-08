@@ -1,11 +1,11 @@
-import 'package:autoperf_monitor/notifiers/history_notifier.dart';
-import 'package:autoperf_monitor/theme/theme_notifier.dart';
+import 'package:cartrackerevo/notifiers/history_notifier.dart';
+import 'package:cartrackerevo/theme/theme_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:autoperf_monitor/screens/dashboard_screen.dart';
-import 'package:autoperf_monitor/screens/fuel_screen.dart';
-import 'package:autoperf_monitor/screens/history_stats_screen.dart';
-import 'package:autoperf_monitor/services/settings_service.dart';
+import 'package:cartrackerevo/screens/dashboard_screen.dart';
+import 'package:cartrackerevo/screens/fuel_screen.dart';
+import 'package:cartrackerevo/screens/history_stats_screen.dart';
+import 'package:cartrackerevo/services/settings_service.dart';
 
 void main() {
   runApp(
@@ -46,7 +46,7 @@ class _MainAppState extends State<MainApp> {
     return Consumer<ThemeNotifier>(
       builder: (context, themeNotifier, child) {
         return MaterialApp(
-          title: 'AutoPerf Monitor',
+          title: 'CarTrackerEvo',
           theme: themeNotifier.getTheme,
           home: Scaffold(
             body: IndexedStack(

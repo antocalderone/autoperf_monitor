@@ -2,11 +2,11 @@
 import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:autoperf_monitor/models/driving_session.dart';
-import 'package:autoperf_monitor/models/fuel_record.dart';
-import 'package:autoperf_monitor/models/gps_point.dart';
-import 'package:autoperf_monitor/models/performance_metrics.dart';
-import 'package:autoperf_monitor/models/maintenance_record.dart'; // Import MaintenanceRecord
+import 'package:cartrackerevo/models/driving_session.dart';
+import 'package:cartrackerevo/models/fuel_record.dart';
+import 'package:cartrackerevo/models/gps_point.dart';
+import 'package:cartrackerevo/models/performance_metrics.dart';
+import 'package:cartrackerevo/models/maintenance_record.dart'; // Import MaintenanceRecord
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();

@@ -1,25 +1,25 @@
-name: autoperf_monitor
-description: "A Flutter application for Android that monitors in real-time car performance using phone sensors and tracks fuel consumption."
+name: cartrackerevo
+description: "CarTrackerEvo: un'applicazione Flutter per Android che monitora in tempo reale le performance dell'auto, traccia i consumi di carburante e gestisce la manutenzione."
 publish_to: 'none'
-version: 0.1.0
+version: 1.0.0
 
 environment:
-  sdk: ^3.10.4
+  sdk: '>=3.10.4 <4.0.0'
 
 dependencies:
-  csv: 6.0.0
-  fl_chart: 1.1.1
+  csv: ^6.0.0
+  fl_chart: ^1.1.1
   flutter:
     sdk: flutter
-  geolocator: 10.0.0
-  intl: 0.18.1
-  path_provider: 2.1.5
-  pdf: 3.11.3
-  sensors_plus: 7.0.0
-  sqflite: 2.4.2
-  syncfusion_flutter_gauges: 32.1.22
-  shared_preferences: ^2.2.3
+  geolocator: ^10.0.0
+  intl: ^0.18.1
+  path_provider: ^2.1.5
+  pdf: ^3.11.3
   provider: ^6.0.0
+  sensors_plus: ^7.0.0
+  shared_preferences: ^2.2.3
+  sqflite: ^2.4.2
+  syncfusion_flutter_gauges: ^32.1.22
 
 dev_dependencies:
   flutter_test:
