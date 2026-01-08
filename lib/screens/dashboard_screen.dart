@@ -1,5 +1,6 @@
 // lib/screens/dashboard_screen.dart
 import 'dart:async';
+import 'package:autoperf_monitor/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Import for HapticFeedback
 import 'package:autoperf_monitor/widgets/analog_speedometer.dart';
@@ -161,13 +162,17 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cruscotto'),
-        // actions: [ // Commented out OBD connection button
-        //   IconButton(
-        //     icon: Icon(_isObdConnected ? Icons.bluetooth_connected : Icons.bluetooth_disabled),
-        //     onPressed: _isObdConnected ? _obdService.disconnect : _connectToObd,
-        //     tooltip: _isObdConnected ? 'Disconnect OBD2' : 'Connect OBD2',
-        //   ),
-        // ],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
