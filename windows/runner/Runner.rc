@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "autoperf_monitor" "\0"
+            VALUE "FileDescription", "CarTrackerEvo" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "autoperf_monitor" "\0"
+            VALUE "InternalName", "CarTrackerEvo" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "autoperf_monitor.exe" "\0"
-            VALUE "ProductName", "autoperf_monitor" "\0"
+            VALUE "OriginalFilename", "CarTrackerEvo.exe" "\0"
+            VALUE "ProductName", "CarTrackerEvo" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

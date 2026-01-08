@@ -1,7 +1,7 @@
 // lib/screens/settings_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:autoperf_monitor/theme/theme_notifier.dart';
+import 'package:cartrackerevo/theme/theme_notifier.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});

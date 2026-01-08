@@ -1,6 +1,6 @@
 // lib/theme/theme_notifier.dart
 import 'package:flutter/material.dart';
-import 'package:autoperf_monitor/services/settings_service.dart';
+import 'package:cartrackerevo/services/settings_service.dart';
 
 class ThemeNotifier with ChangeNotifier {
   final SettingsService _settingsService;

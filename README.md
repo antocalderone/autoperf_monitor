@@ -1,8 +1,8 @@
-# AutoPerf Monitor
+# CarTrackerEvo
 
 ## Introduzione
 
-AutoPerf Monitor è un'applicazione mobile sviluppata in Flutter che trasforma il tuo smartphone in un potente strumento di monitoraggio per la tua auto. L'app registra in tempo reale le performance di guida, tiene traccia dei consumi di carburante, gestisce la manutenzione e offre un'esperienza personalizzabile.
+CarTrackerEvo è un'applicazione mobile sviluppata in Flutter che trasforma il tuo smartphone in un potente strumento di monitoraggio per la tua auto. L'app registra in tempo reale le performance di guida, tiene traccia dei consumi di carburante, gestisce la manutenzione e offre un'esperienza personalizzabile.
 
 È lo strumento ideale per gli appassionati di auto che desiderano avere sempre sotto controllo ogni aspetto del proprio veicolo.
 

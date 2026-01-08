@@ -1,8 +1,8 @@
 // lib/screens/maintenance_screen.dart
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:autoperf_monitor/database/database_helper.dart';
-import 'package:autoperf_monitor/models/maintenance_record.dart';
+import 'package:cartrackerevo/database/database_helper.dart';
+import 'package:cartrackerevo/models/maintenance_record.dart';
 
 class MaintenanceScreen extends StatefulWidget {
   const MaintenanceScreen({super.key});

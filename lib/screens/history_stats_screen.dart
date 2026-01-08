@@ -1,13 +1,13 @@
 import 'dart:math';
-import 'package:autoperf_monitor/notifiers/history_notifier.dart';
-import 'package:autoperf_monitor/utils/date_formatter.dart';
+import 'package:cartrackerevo/notifiers/history_notifier.dart';
+import 'package:cartrackerevo/utils/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:autoperf_monitor/database/database_helper.dart';
-import 'package:autoperf_monitor/models/driving_session.dart';
-import 'package:autoperf_monitor/models/fuel_record.dart'; // Import FuelRecord
-import 'package:autoperf_monitor/services/export_service.dart';
-import 'package:autoperf_monitor/screens/maintenance_screen.dart';
+import 'package:cartrackerevo/database/database_helper.dart';
+import 'package:cartrackerevo/models/driving_session.dart';
+import 'package:cartrackerevo/models/fuel_record.dart'; // Import FuelRecord
+import 'package:cartrackerevo/services/export_service.dart';
+import 'package:cartrackerevo/screens/maintenance_screen.dart';
 import 'package:provider/provider.dart'; // Import MaintenanceScreen
 
 class HistoryStatsScreen extends StatefulWidget {

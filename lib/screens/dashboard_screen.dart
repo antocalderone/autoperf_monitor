@@ -1,14 +1,14 @@
 // lib/screens/dashboard_screen.dart
 import 'dart:async';
-import 'package:autoperf_monitor/notifiers/history_notifier.dart';
-import 'package:autoperf_monitor/screens/settings_screen.dart';
+import 'package:cartrackerevo/notifiers/history_notifier.dart';
+import 'package:cartrackerevo/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Import for HapticFeedback
-import 'package:autoperf_monitor/widgets/analog_speedometer.dart';
-import 'package:autoperf_monitor/services/performance_monitor.dart'; // Import the service
-import 'package:autoperf_monitor/models/performance_metrics.dart';
+import 'package:cartrackerevo/widgets/analog_speedometer.dart';
+import 'package:cartrackerevo/services/performance_monitor.dart'; // Import the service
+import 'package:cartrackerevo/models/performance_metrics.dart';
 import 'package:provider/provider.dart'; // Import PerformanceMetrics
-// import 'package:autoperf_monitor/services/obd_service.dart'; // Commented out ObdService import
+// import 'package:cartrackerevo/services/obd_service.dart'; // Commented out ObdService import
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});

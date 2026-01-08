@@ -2,12 +2,12 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:autoperf_monitor/database/database_helper.dart';
-import 'package:autoperf_monitor/models/driving_session.dart';
-import 'package:autoperf_monitor/models/gps_point.dart';
-import 'package:autoperf_monitor/models/performance_metrics.dart';
-import 'package:autoperf_monitor/services/settings_service.dart';
-import 'package:autoperf_monitor/utils/douglas_peucker.dart';
+import 'package:cartrackerevo/database/database_helper.dart';
+import 'package:cartrackerevo/models/driving_session.dart';
+import 'package:cartrackerevo/models/gps_point.dart';
+import 'package:cartrackerevo/models/performance_metrics.dart';
+import 'package:cartrackerevo/services/settings_service.dart';
+import 'package:cartrackerevo/utils/douglas_peucker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
