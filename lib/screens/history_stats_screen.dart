@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:autoperf_monitor/notifiers/history_notifier.dart';
 import 'package:autoperf_monitor/utils/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -6,7 +7,8 @@ import 'package:autoperf_monitor/database/database_helper.dart';
 import 'package:autoperf_monitor/models/driving_session.dart';
 import 'package:autoperf_monitor/models/fuel_record.dart'; // Import FuelRecord
 import 'package:autoperf_monitor/services/export_service.dart';
-import 'package:autoperf_monitor/screens/maintenance_screen.dart'; // Import MaintenanceScreen
+import 'package:autoperf_monitor/screens/maintenance_screen.dart';
+import 'package:provider/provider.dart'; // Import MaintenanceScreen
 
 class HistoryStatsScreen extends StatefulWidget {
   const HistoryStatsScreen({super.key});
@@ -15,30 +17,30 @@ class HistoryStatsScreen extends StatefulWidget {
   State<HistoryStatsScreen> createState() => _HistoryStatsScreenState();
 }
 
-class _HistoryStatsScreenState extends State<HistoryStatsScreen> with WidgetsBindingObserver {
+class _HistoryStatsScreenState extends State<HistoryStatsScreen> {
   final DatabaseHelper _databaseHelper = DatabaseHelper();
   final ExportService _exportService = ExportService();
   List<DrivingSession> _drivingSessions = [];
   List<FuelRecord> _fuelRecords = [];
+  late HistoryNotifier _historyNotifier;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     _loadData();
   }
 
   @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _historyNotifier = Provider.of<HistoryNotifier>(context);
+    _historyNotifier.addListener(_loadData);
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _loadData();
-    }
+  void dispose() {
+    _historyNotifier.removeListener(_loadData);
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -318,7 +320,6 @@ class _HistoryStatsScreenState extends State<HistoryStatsScreen> with WidgetsBin
                                       if (value == minX || value == maxX) {
                                         final date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
                                         return SideTitleWidget(
-                                          axisSide: meta.axisSide,
                                           space: 8.0,
                                           child: Text(DateFormatter.formatHourMinute(date), style: const TextStyle(fontSize: 10)),
                                         );

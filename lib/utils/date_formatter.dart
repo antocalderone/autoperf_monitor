@@ -1,5 +1,5 @@
 // lib/utils/date_formatter.dart
-import 'package.intl/intl.dart';
+import 'package:intl/intl.dart';
 
 class DateFormatter {
   static final anomonthday = DateFormat('yyyy-MM-dd');

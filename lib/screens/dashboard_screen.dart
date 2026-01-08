@@ -1,11 +1,13 @@
 // lib/screens/dashboard_screen.dart
 import 'dart:async';
+import 'package:autoperf_monitor/notifiers/history_notifier.dart';
 import 'package:autoperf_monitor/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Import for HapticFeedback
 import 'package:autoperf_monitor/widgets/analog_speedometer.dart';
 import 'package:autoperf_monitor/services/performance_monitor.dart'; // Import the service
-import 'package:autoperf_monitor/models/performance_metrics.dart'; // Import PerformanceMetrics
+import 'package:autoperf_monitor/models/performance_metrics.dart';
+import 'package:provider/provider.dart'; // Import PerformanceMetrics
 // import 'package:autoperf_monitor/services/obd_service.dart'; // Commented out ObdService import
 
 class DashboardScreen extends StatefulWidget {
@@ -116,10 +118,13 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
   void _toggleMonitoring() async { // Changed to async
     HapticFeedback.lightImpact(); // Haptic feedback on button press
     if (_isMonitoring) {
-      _performanceMonitor.stopMonitoring();
-      setState(() {
-        _isMonitoring = false;
-      });
+      await _performanceMonitor.stopMonitoring();
+      if (mounted) {
+        Provider.of<HistoryNotifier>(context, listen: false).notifyHistoryChanged();
+        setState(() {
+          _isMonitoring = false;
+        });
+      }
     } else {
       try {
         await _performanceMonitor.startMonitoring(); // Await without assignment
